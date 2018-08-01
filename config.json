@@ -6,6 +6,7 @@
   },
   "inbound": {
     "port": 11234,
+    "listen":"127.0.0.1",
     "protocol": "vmess",
     "settings": {
       "clients": [
@@ -18,56 +19,11 @@
       ]
     },
      "streamSettings": {
-     "network": "mkcp",
-     "kcpSettings": {
-        "mtu": 1350,
-        "tti": 20,
-        "uplinkCapacity": 5,
-        "downlinkCapacity": 100,
-        "congestion": false,
-        "readBufferSize": 1,
-        "writeBufferSize": 1,
-        "header": {
-          "type": "srtp"
-        }
-      }
+     "network": "ws",
+      "wsSettings": {
+      "path": "mypath"
     }
   },
-  "inboundDetour": [            
-  {
-    "port": 11234,
-    "protocol": "vmess",
-    "settings": {
-       "clients": [
-        {
-          "id": "bbbb",
-          "level": 1,
-          "alterId": 64,
-	  "email": "atcp1234@gmail.com"	
-        }
-     ]
-    },
-	"streamSettings": {
-      "network": "tcp",
-      "tcpSettings": {
-        "header": { 
-          "type": "http",
-          "response": {
-            "version": "1.1",
-            "status": "200",
-            "reason": "OK",
-            "headers": {
-              "Content-Type": ["application/octet-stream", "application/x-msdownload", "text/html", "application/x-shockwave-flash"],
-              "Transfer-Encoding": ["chunked"],
-              "Connection": ["keep-alive"],
-              "Pragma": "no-cache"
-            }
-          }
-        }
-      }
-    }
-  }
- ],
   "outbound": {
     "protocol": "freedom",
     "settings": {}
