@@ -51,6 +51,7 @@ uuid：${kcpuuid}
 传输协议：ws
 别名：myws
 路径：${newpath}
+底层传输：tls
 }
 EOF
 
