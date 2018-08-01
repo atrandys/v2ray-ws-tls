@@ -22,7 +22,8 @@
       "network": "ws",
       "wsSettings": {
      	 "path": "/mypath"
-    }
+    	}
+     }
   },
   "outbound": {
     "protocol": "freedom",
