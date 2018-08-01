@@ -51,7 +51,6 @@ uuid：${kcpuuid}
 传输协议：ws
 别名：myws
 路径：${newpath}
-底层传输：tls
 }
 EOF
 
@@ -70,7 +69,6 @@ echo "加密方式：aes-128-gcm"
 echo "传输协议：ws"
 echo "别名：myws"
 echo "路径：${newpath}"
-echo "底层传输：tls"
 echo 
 
 
