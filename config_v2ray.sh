@@ -29,7 +29,7 @@ wget https://raw.githubusercontent.com/yobabyshark/prov-ws/master/config.json
 #生成并替换uuid，kcp、tcp各一个
 kcpuuid=$(cat /proc/sys/kernel/random/uuid)
 sed -i "s/aaaa/$kcpuuid/;" config.json
-newpath="ray"$(cat /dev/urandom | head -1 | md5sum | head -c 8)
+newpath=$(cat /dev/urandom | head -1 | md5sum | head -c 8)
 sed -i "s/mypath/$newpath/;" config.json
 
 #生成并修改端口
