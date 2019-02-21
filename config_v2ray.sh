@@ -15,7 +15,7 @@ rand(){
 }
 yum install -y wget
 #获取本机外网ip
-serverip=$(curl icanhazip.com)
+serverip=$(curl ipv4.icanhazip.com)
 
 #进入v2配置文件目录
 cd /etc/v2ray/
@@ -26,14 +26,13 @@ rm -f config.json
 #下载kcp+tcp配置文件，kcp（srtp混淆），tcp（http混淆）
 wget https://raw.githubusercontent.com/yobabyshark/prov-ws/master/config.json
 
-#生成并替换uuid，kcp、tcp各一个
 kcpuuid=$(cat /proc/sys/kernel/random/uuid)
 sed -i "s/aaaa/$kcpuuid/;" config.json
 newpath=$(cat /dev/urandom | head -1 | md5sum | head -c 8)
 sed -i "s/mypath/$newpath/;" config.json
 
 #生成并修改端口
-port=$(rand 10000 30000)
+port=$(rand 10000 60000)
 sed -i "s/11234/$port/" config.json
 
 #重启prov
@@ -59,7 +58,7 @@ EOF
 #输出配置信息
 clear
 echo
-echo "安装已经完成，开启了kcp和tcp两种模式，客户端可任意选择对应的配置"
+echo "安装已经完成"
 echo 
 echo "===========KCP配置============="
 echo "地址：${serverip}"
