@@ -22,6 +22,22 @@ function yellow(){
     echo -e "\033[33m\033[01m $1 \033[0m"
 }
 
+install_openssl()
+{
+    yum install -y libtool perl-core zlib-devel gcc wget
+    wget https://www.openssl.org/source/openssl-1.1.1a.tar.gz
+    tar xzvf openssl-1.1.1a.tar.gz
+    cd openssl-1.1.1a
+    ./config --prefix=/usr/local/openssl --openssldir=/usr/local/openssl shared zlib
+    make && make install
+    mv /usr/bin/openssl /usr/bin/openssl.bak
+    mv /usr/include/openssl /usr/include/openssl.bak
+    ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
+    ln -s /usr/local/ssl/include/openssl /usr/include/openssl
+    echo "/usr/local/ssl/lib" >> /etc/ld.so.conf
+    ldconfig -v
+}
+
 #安装nginx
 install_nginx(){
 
