@@ -22,47 +22,23 @@ function yellow(){
     echo -e "\033[33m\033[01m $1 \033[0m"
 }
 
-install_openssl()
-{
-    yum install -y libtool perl-core zlib-devel gcc wget
-    wget https://www.openssl.org/source/openssl-1.1.1a.tar.gz
-    tar xzvf openssl-1.1.1a.tar.gz
-    cd openssl-1.1.1a
-    ./config --prefix=/usr/local/openssl --openssldir=/usr/local/openssl shared zlib
-    make && make install
-    mv /usr/bin/openssl /usr/bin/openssl.bak
-    mv /usr/include/openssl /usr/include/openssl.bak
-    ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
-    ln -s /usr/local/ssl/include/openssl /usr/include/openssl
-    echo "/usr/local/ssl/lib" >> /etc/ld.so.conf
-    ldconfig -v
-}
 
 #安装nginx
 install_nginx(){
-
-    yum install -y yum-utils
+    yum install -y libtool perl-core zlib-devel gcc wget pcre*
+    wget https://www.openssl.org/source/openssl-1.1.1a.tar.gz
+    tar xzvf openssl-1.1.1a.tar.gz
     
-cat > /etc/yum.repos.d/nginx.repo<<-EOF
-[nginx-stable]
-name=nginx stable repo
-baseurl=http://nginx.org/packages/centos/\$releasever/\$basearch/
-gpgcheck=1
-enabled=1
-gpgkey=https://nginx.org/keys/nginx_signing.key
-
-[nginx-mainline]
-name=nginx mainline repo
-baseurl=http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/
-gpgcheck=1
-enabled=0
-gpgkey=https://nginx.org/keys/nginx_signing.key
-EOF
-
-    yum-config-manager --enable nginx-mainline
-    yum install -y nginx
-    systemctl enable nginx.service
-    systemctl start nginx.service
+    mkdir /etc/nginx
+    mkdir /etc/nginx/ssl
+    mkdir /etc/nginx/conf.d
+    wget https://nginx.org/download/nginx-1.15.8.tar.gz
+    tar xf nginx-1.15.8.tar.gz && rm nginx-1.15.8.tar.gz
+    cd nginx-1.15.8
+    ./configure --prefix=/etc/nginx --with-openssl=../openssl-1.1.1a --with-openssl-opt='enable-tls1_3' --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_sub_module --with-stream --with-stream_ssl_module
+    make && make install
+    
+    
     rm -f /etc/nginx/conf.d/default.conf
     rm -f /etc/nginx/nginx.conf
     mkdir /etc/nginx/ssl
@@ -90,6 +66,24 @@ http {
     include /etc/nginx/conf.d/*.conf;
 }
 EOF
+
+cat > /etc/nginx/conf.d/default.conf<<-EOF
+server {
+    listen       80;
+    server_name  localhost;
+    root /usr/share/nginx/html;
+    index index.php index.html index.htm;
+    location / {
+        try_files \$uri \$uri/ /index.php?\$args;
+    }
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+EOF
+
+    ./etc/nginx/sbin/nginx
 
     curl https://get.acme.sh | sh
     green "======================"
