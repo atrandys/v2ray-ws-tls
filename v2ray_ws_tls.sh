@@ -22,23 +22,6 @@ function yellow(){
     echo -e "\033[33m\033[01m $1 \033[0m"
 }
 
-#安装openssl1.1.1
-install_openssl()
-{
-    yum install -y libtool perl-core zlib-devel gcc
-    wget https://www.openssl.org/source/openssl-1.1.1a.tar.gz
-    tar xzvf openssl-1.1.1a.tar.gz
-    cd openssl-1.1.1a
-    ./config --prefix=/usr/local/openssl --openssldir=/usr/local/openssl shared zlib
-    make && make install
-    mv /usr/bin/openssl /usr/bin/openssl.bak
-    mv /usr/include/openssl /usr/include/openssl.bak
-    ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
-    ln -s /usr/local/ssl/include/openssl /usr/include/openssl
-    echo "/usr/local/ssl/lib" >> /etc/ld.so.conf
-    ldconfig -v
-}
-
 #安装nginx
 install_nginx(){
 
@@ -119,7 +102,7 @@ server {
     #TLS 版本控制
     ssl_protocols   TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
     ssl_ciphers     'TLS13-AES-256-GCM-SHA384:TLS13-CHACHA20-POLY1305-SHA256:TLS13-AES-128-GCM-SHA256:TLS13-AES-128-CCM-8-SHA256:TLS13-AES-128-CCM-SHA256:EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+ECDSA+AES128:EECDH+aRSA+AES128:RSA+AES128:EECDH+ECDSA+AES256:EECDH+aRSA+AES256:RSA+AES256:EECDH+ECDSA+3DES:EECDH+aRSA+3DES:RSA+3DES:!MD5';
-
+    ssl_prefer_server_ciphers   on;
     # 开启 1.3 0-RTT
     ssl_early_data  on;
     ssl_stapling on;
@@ -188,7 +171,6 @@ green "底层传输：tls"
 green 
 }
 
-install_openssl
 install_nginx
 install_v2ray
 
