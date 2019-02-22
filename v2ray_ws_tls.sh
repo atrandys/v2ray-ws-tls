@@ -79,7 +79,7 @@ EOF
     green "======================"
     green " 输入解析到此VPS的域名"
     green "======================"
-    read domain
+    read -p domain
     ~/.acme.sh/acme.sh  --issue  -d $domain  --webroot /usr/share/nginx/html/
     ~/.acme.sh/acme.sh  --installcert  -d  $domain   \
         --key-file   /etc/nginx/ssl/$domain.key \
