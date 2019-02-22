@@ -38,15 +38,15 @@ install_nginx(){
     ./configure --prefix=/etc/nginx --with-openssl=../openssl-1.1.1a --with-openssl-opt='enable-tls1_3' --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_sub_module --with-stream --with-stream_ssl_module
     make && make install
     
-    
-    rm -f /etc/nginx/conf.d/default.conf
-    rm -f /etc/nginx/nginx.conf
-    mkdir /etc/nginx/ssl
+    green "======================"
+    green " 输入解析到此VPS的域名"
+    green "======================"
+    read domain
     
 cat > /etc/nginx/nginx.conf <<-EOF
 user  nginx;
 worker_processes  1;
-error_log  /var/log/nginx/error.log warn;
+error_log  /etc/nginx/logs/error.log warn;
 pid        /var/run/nginx.pid;
 events {
     worker_connections  1024;
@@ -57,7 +57,7 @@ http {
     log_format  main  '\$remote_addr - \$remote_user [\$time_local] "\$request" '
                       '\$status \$body_bytes_sent "\$http_referer" '
                       '"\$http_user_agent" "\$http_x_forwarded_for"';
-    access_log  /var/log/nginx/access.log  main;
+    access_log  /etc/nginx/logs/access.log  main;
     sendfile        on;
     #tcp_nopush     on;
     keepalive_timeout  120;
@@ -70,31 +70,27 @@ EOF
 cat > /etc/nginx/conf.d/default.conf<<-EOF
 server {
     listen       80;
-    server_name  localhost;
-    root /usr/share/nginx/html;
+    server_name  $domain;
+    root /etc/nginx/html;
     index index.php index.html index.htm;
     location / {
         try_files \$uri \$uri/ /index.php?\$args;
     }
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {
-        root   /usr/share/nginx/html;
+        root   /etc/nginx/html;
     }
 }
 EOF
 
-    ./etc/nginx/sbin/nginx
+    /etc/nginx/sbin/nginx
 
     curl https://get.acme.sh | sh
-    green "======================"
-    green " 输入解析到此VPS的域名"
-    green "======================"
-    read domain
-    ~/.acme.sh/acme.sh  --issue  -d $domain  --webroot /usr/share/nginx/html/
+    ~/.acme.sh/acme.sh  --issue  -d $domain  --webroot /etc/nginx/html/
     ~/.acme.sh/acme.sh  --installcert  -d  $domain   \
         --key-file   /etc/nginx/ssl/$domain.key \
         --fullchain-file /etc/nginx/ssl/fullchain.cer \
-        --reloadcmd  "service nginx force-reload"
+        --reloadcmd  "/etc/nginx/sbin/nginx -s reload"
 	
 cat > /etc/nginx/conf.d/default.conf<<-EOF
 server { 
@@ -105,7 +101,7 @@ server {
 server {
     listen 443 ssl http2;
     server_name $domain;
-    root /usr/share/nginx/html;
+    root /etc/nginx/html;
     index index.php index.html;
     ssl_certificate /etc/nginx/ssl/fullchain.cer; 
     ssl_certificate_key /etc/nginx/ssl/$domain.key;
