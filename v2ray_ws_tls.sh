@@ -123,7 +123,7 @@ server {
 }
 EOF
 }
-
+#安装v2ray
 install_v2ray(){
     
     yum install -y wget
@@ -170,6 +170,9 @@ green "路径：${newpath}"
 green "底层传输：tls"
 green 
 }
+
+install_nginx
+install_v2ray
 
 
 
