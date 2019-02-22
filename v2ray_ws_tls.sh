@@ -43,7 +43,7 @@ install_nginx(){
     green "======================"
     read domain
     
-cat > /etc/nginx/nginx.conf <<-EOF
+cat > /etc/nginx/conf/nginx.conf <<-EOF
 user  root;
 worker_processes  1;
 error_log  /etc/nginx/logs/error.log warn;
