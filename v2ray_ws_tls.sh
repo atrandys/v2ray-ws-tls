@@ -142,8 +142,8 @@ install_v2ray(){
     newpath=$(cat /dev/urandom | head -1 | md5sum | head -c 4)
     sed -i "s/mypath/$newpath/;" config.json
     sed -i "s/mypath/$newpath/;" /etc/nginx/conf.d/default.conf
-    /usr/local/nginx/sbin/nginx -s stop
-    /usr/local/nginx/sbin/nginx
+    /etc/nginx/sbin/nginx -s stop
+    /etc/nginx/sbin/nginx
     systemctl restart v2ray.service
 
 cat > /etc/v2ray/myconfig.json<<-EOF
