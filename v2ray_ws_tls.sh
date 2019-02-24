@@ -178,8 +178,41 @@ green "底层传输：tls"
 green 
 }
 
-install_nginx
-install_v2ray
+start_menu(){
+    clear
+    green " ===================================="
+    green " 介绍：一键安装v2ray+ws+tls           "
+    green " 系统：centos7                       "
+    green " 作者：atrandys                      "
+    green " 网站：www.atrandys.com              "
+    green " Youtube：atrandys                   "
+    green " ===================================="
+    echo
+    green " 1. 安装v2ray+ws+tls"
+    green " 2. 升级v2ray"
+    yellow " 0. 退出脚本"
+    echo
+    read -p "请输入数字:" num
+    case "$num" in
+    1)
+    install_nginx
+    install_v2ray
+    ;;
+    2)
+    bash <(curl -L -s https://install.direct/go.sh)  
+    ;;
+    0)
+    exit 1
+    ;;
+    *)
+    clear
+    red "请输入正确数字"
+    sleep 2s
+    start_menu
+    ;;
+    esac
+}
 
+start_menu
 
 
