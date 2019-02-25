@@ -27,7 +27,7 @@ function yellow(){
 install_nginx(){
     systemctl stop firewalld
     systemctl disable firewalld
-    yum install -y libtool perl-core zlib-devel gcc wget pcre*
+    yum install -y libtool perl-core zlib-devel gcc wget pcre* unzip
     wget https://www.openssl.org/source/openssl-1.1.1a.tar.gz
     tar xzvf openssl-1.1.1a.tar.gz
     
@@ -144,6 +144,10 @@ install_v2ray(){
     newpath=$(cat /dev/urandom | head -1 | md5sum | head -c 4)
     sed -i "s/mypath/$newpath/;" config.json
     sed -i "s/mypath/$newpath/;" /etc/nginx/conf.d/default.conf
+    cd /etc/nginx/html
+    rm -f /etc/nginx/html/*
+    wget https://github.com/atrandys/v2ray-ws-tls/raw/master/web.zip
+    unzip web.zip
     /etc/nginx/sbin/nginx -s stop
     /etc/nginx/sbin/nginx
     systemctl restart v2ray.service
