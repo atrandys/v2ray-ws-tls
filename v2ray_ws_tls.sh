@@ -223,7 +223,7 @@ start_menu(){
     echo
     green " 1. 安装v2ray+ws+tls"
     green " 2. 升级v2ray"
-    red " 3. 升级v2ray"
+    red " 3. 卸载v2ray"
     yellow " 0. 退出脚本"
     echo
     read -p "请输入数字:" num
