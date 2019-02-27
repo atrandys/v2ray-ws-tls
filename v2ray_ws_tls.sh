@@ -197,6 +197,20 @@ green "底层传输：tls"
 green 
 }
 
+remove_v2ray(){
+
+    /etc/nginx/sbin/nginx -s stop
+    systemctl stop v2ray.service
+    systemctl disable v2ray.service
+    
+    rm -rf /usr/bin/v2ray /etc/v2ray
+    rm -rf /etc/v2ray
+    rm -rf /etc/nginx
+    
+    green "nginx、v2ray已删除"
+    
+}
+
 start_menu(){
     clear
     green " ===================================="
@@ -209,6 +223,7 @@ start_menu(){
     echo
     green " 1. 安装v2ray+ws+tls"
     green " 2. 升级v2ray"
+    red " 3. 升级v2ray"
     yellow " 0. 退出脚本"
     echo
     read -p "请输入数字:" num
@@ -219,6 +234,9 @@ start_menu(){
     ;;
     2)
     bash <(curl -L -s https://install.direct/go.sh)  
+    ;;
+    3)
+    remove_v2ray 
     ;;
     0)
     exit 1
