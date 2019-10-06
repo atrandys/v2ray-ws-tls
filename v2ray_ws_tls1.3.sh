@@ -151,6 +151,7 @@ install_v2ray(){
     /etc/nginx/sbin/nginx -s stop
     /etc/nginx/sbin/nginx
     systemctl restart v2ray.service
+    systemctl enable v2ray.service
     
     #增加自启动脚本
 cat > /etc/rc.d/init.d/autov2ray<<-EOF
