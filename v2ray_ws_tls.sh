@@ -37,7 +37,7 @@ install_nginx(){
     wget https://nginx.org/download/nginx-1.15.8.tar.gz
     tar xf nginx-1.15.8.tar.gz && rm nginx-1.15.8.tar.gz
     cd nginx-1.15.8
-    ./configure --prefix=/etc/nginx --with-openssl=../openssl-1.1.1a --with-openssl-opt='enable-tls1_3' --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_sub_module --with-stream --with-stream_ssl_module
+    ./configure --prefix=/etc/nginx --with-openssl=../openssl-1.1.1a --with-openssl-opt='enable-tls1_3' --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_sub_module --with-stream --with-stream_ssl_module --with-ipv6
     make && make install
     
     green "======================"
@@ -71,7 +71,7 @@ EOF
 
 cat > /etc/nginx/conf.d/default.conf<<-EOF
 server {
-    listen       80;
+    listen       [::]:80 ipv6only=on;
     server_name  $domain;
     root /etc/nginx/html;
     index index.php index.html index.htm;
