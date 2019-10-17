@@ -96,7 +96,7 @@ EOF
 	
 cat > /etc/nginx/conf.d/default.conf<<-EOF
 server { 
-    listen       80;
+    listen       [::]:80 ipv6only=on;
     server_name  $domain;
     rewrite ^(.*)$  https://\$host\$1 permanent; 
 }
