@@ -29,6 +29,14 @@ install_nginx(){
     sleep 1
     systemctl stop firewalld
     systemctl disable firewalld
+    if [ "$CHECK" == "SELINUX=enforcing" ]; then
+        sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+        setenforce 0
+    fi
+    if [ "$CHECK" == "SELINUX=permissive" ]; then
+         sed -i 's/SELINUX=permissive/SELINUX=disabled/g' /etc/selinux/config
+         setenforce 0
+    fi
     yum install -y libtool perl-core zlib-devel gcc wget pcre* unzip
     wget https://www.openssl.org/source/openssl-1.1.1a.tar.gz
     tar xzvf openssl-1.1.1a.tar.gz
