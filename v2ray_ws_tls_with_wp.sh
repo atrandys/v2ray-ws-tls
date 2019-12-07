@@ -213,6 +213,7 @@ server {
         root   /usr/share/nginx/html;
     }
 }
+EOF
 
 cat > /etc/nginx/conf/nginx.conf <<-EOF
 user  root;
