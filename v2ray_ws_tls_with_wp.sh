@@ -215,7 +215,7 @@ server {
 }
 
 cat > /etc/nginx/nginx.conf <<-EOF
-user  nginx;
+user  root;
 worker_processes  1;
 error_log  /var/log/nginx/error.log warn;
 pid        /var/run/nginx.pid;
@@ -387,7 +387,6 @@ install_wp(){
     sleep 1
     sed -i "s/database_name_here/wordpress_db/;s/username_here/root/;s/password_here/$mysqlpasswd/;" /usr/share/nginx/html/wp-config.php
     echo "define('FS_METHOD', "direct");" >> /usr/share/nginx/html/wp-config.php
-    chown -R nginx /usr/share/nginx/html/
     chmod -R 777 /usr/share/nginx/html/wp-content
     green "==========================================================="
     green " WordPress服务端配置已完成，请打开浏览器访问您的域名进行前台配置"
