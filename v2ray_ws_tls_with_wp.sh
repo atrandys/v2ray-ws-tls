@@ -29,14 +29,12 @@ exit
 fi
 if  [ -n "$(grep ' 6\.' /etc/redhat-release)" ] ;then
 	red "==============="
-	red " 当前系统CentOS6"
 	red " 仅支持CentOS7"
 	red "==============="
 exit
 fi
 if  [ -n "$(grep ' 8\.' /etc/redhat-release)" ] ;then
 	red "==============="
-	red " 当前系统CentOS8"
 	red " 仅支持CentOS7"
 	red "==============="
 exit
@@ -66,17 +64,17 @@ check_domain(){
     real_addr=`ping ${your_domain} -c 1 | sed '1{s/[^(]*(//;s/).*//;q}'`
     local_addr=`curl ipv4.icanhazip.com`
     if [ $real_addr == $local_addr ] ; then
-    		green "=========================================="
-		green "域名解析正常，开始安装wordpress+v2ray_ws_tls"
-		green "=========================================="
-		sleep 1s
+    	green "============================="
+		green "域名解析正常，开始安装wordpress"
+		green "============================="
+	sleep 1s
 		download_wp
 		install_php7
-    		install_mysql
-    		install_nginx
+    	install_mysql
+    	install_nginx
 		install_v2ray
 		config_php
-    		install_wp
+    	install_wp
 		green
 		green "v2ray安装已经完成"
 		green 
@@ -92,7 +90,7 @@ check_domain(){
 		green "底层传输：tls"
 		green 
     else
-        	red "================================"
+        red "================================"
 		red "域名解析地址与本VPS IP地址不一致"
 		red "本次安装失败，请确保域名解析正常"
 		red "================================"
