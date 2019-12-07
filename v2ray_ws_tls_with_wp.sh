@@ -229,7 +229,7 @@ http {
     log_format  main  '\$remote_addr - \$remote_user [\$time_local] "\$request" '
                       '\$status \$body_bytes_sent "\$http_referer" '
                       '"\$http_user_agent" "\$http_x_forwarded_for"';
-    access_log  /var/log/nginx/access.log  main;
+    #access_log  /var/log/nginx/access.log  main;
     sendfile        on;
     #tcp_nopush     on;
     keepalive_timeout  120;
@@ -264,7 +264,7 @@ server {
     ssl_stapling on;
     ssl_stapling_verify on;
     add_header Strict-Transport-Security "max-age=31536000";
-    access_log /var/log/nginx/hostscube.log combined;
+    #access_log /var/log/nginx/hostscube.log combined;
     location ~ \.php$ {
     	fastcgi_pass 127.0.0.1:9000;
     	fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
