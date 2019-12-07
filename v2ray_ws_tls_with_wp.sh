@@ -197,7 +197,7 @@ install_nginx(){
     make && make install
 	
     rm -f /etc/nginx/conf.d/default.conf
-    rm -f /etc/nginx/nginx.conf
+    rm -f /etc/nginx/conf/nginx.conf
     
 cat > /etc/nginx/conf.d/default.conf<<-EOF
 server {
@@ -214,7 +214,7 @@ server {
     }
 }
 
-cat > /etc/nginx/nginx.conf <<-EOF
+cat > /etc/nginx/conf/nginx.conf <<-EOF
 user  root;
 worker_processes  1;
 error_log  /var/log/nginx/error.log warn;
@@ -223,7 +223,7 @@ events {
     worker_connections  1024;
 }
 http {
-    include       /etc/nginx/mime.types;
+    include       /etc/nginx/conf/mime.types;
     default_type  application/octet-stream;
     log_format  main  '\$remote_addr - \$remote_user [\$time_local] "\$request" '
                       '\$status \$body_bytes_sent "\$http_referer" '
@@ -238,7 +238,7 @@ http {
 }
 EOF
 	
-	/etc/nginx/sbin/nginx -c /etc/nginx/nginx.conf
+	/etc/nginx/sbin/nginx 
 
     curl https://get.acme.sh | sh
     ~/.acme.sh/acme.sh  --issue  -d $your_domain  --webroot /usr/share/nginx/html/
@@ -286,7 +286,7 @@ EOF
     newpath=$(cat /dev/urandom | head -1 | md5sum | head -c 4)
     sed -i "s/mypath/$newpath/;" /etc/nginx/conf.d/default.conf
     /etc/nginx/sbin/nginx -s stop
-    /etc/nginx/sbin/nginx -c /etc/nginx/nginx.conf
+    /etc/nginx/sbin/nginx 
 
 }
 
@@ -307,7 +307,7 @@ cat > /etc/rc.d/init.d/autov2ray<<-EOF
 #!/bin/sh
 #chkconfig: 2345 80 90
 #description:autov2ray
-/etc/nginx/sbin/nginx -c /etc/nginx/nginx.conf
+/etc/nginx/sbin/nginx
 EOF
 
     #设置脚本权限
