@@ -196,6 +196,21 @@ install_nginx(){
 	
     rm -f /etc/nginx/conf.d/default.conf
     rm -f /etc/nginx/nginx.conf
+    
+cat > /etc/nginx/conf.d/default.conf<<-EOF
+server {
+    listen       80;
+    server_name  $your_domain;
+    root /usr/share/nginx/html;
+    index index.php index.html index.htm;
+    location / {
+        try_files \$uri \$uri/ /index.php?\$args;
+    }
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
 
 cat > /etc/nginx/nginx.conf <<-EOF
 user  nginx;
@@ -221,7 +236,7 @@ http {
 }
 EOF
 	
-	/etc/nginx/sbin/nginx
+	/etc/nginx/sbin/nginx -c /etc/nginx/nginx.conf
 
     curl https://get.acme.sh | sh
     ~/.acme.sh/acme.sh  --issue  -d $your_domain  --webroot /usr/share/nginx/html/
@@ -266,8 +281,10 @@ server {
 }
 EOF
 
-	newpath=$(cat /dev/urandom | head -1 | md5sum | head -c 4)
+    newpath=$(cat /dev/urandom | head -1 | md5sum | head -c 4)
     sed -i "s/mypath/$newpath/;" /etc/nginx/conf.d/default.conf
+    /etc/nginx/sbin/nginx -s stop
+    /etc/nginx/sbin/nginx -c /etc/nginx/nginx.conf
 
 }
 
@@ -279,9 +296,7 @@ install_v2ray(){
     wget https://raw.githubusercontent.com/atrandys/v2ray-ws-tls/master/config.json
     v2uuid=$(cat /proc/sys/kernel/random/uuid)
     sed -i "s/aaaa/$v2uuid/;" config.json
-	sed -i "s/mypath/$newpath/;" config.json
-    /etc/nginx/sbin/nginx -s stop
-    /etc/nginx/sbin/nginx
+    sed -i "s/mypath/$newpath/;" config.json
     systemctl restart v2ray.service
     systemctl enable v2ray.service
     
@@ -290,7 +305,7 @@ cat > /etc/rc.d/init.d/autov2ray<<-EOF
 #!/bin/sh
 #chkconfig: 2345 80 90
 #description:autov2ray
-/etc/nginx/sbin/nginx
+/etc/nginx/sbin/nginx -c /etc/nginx/nginx.conf
 EOF
 
     #设置脚本权限
