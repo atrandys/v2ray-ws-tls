@@ -261,6 +261,12 @@ server {
     index index.php index.html;
     ssl_certificate /etc/nginx/ssl/fullchain.cer; 
     ssl_certificate_key /etc/nginx/ssl/$your_domain.key;
+    #TLS 版本控制
+    ssl_protocols   TLSv1.3;
+    ssl_ciphers     TLS13-AES-256-GCM-SHA384:TLS13-CHACHA20-POLY1305-SHA256:TLS13-AES-128-GCM-SHA256:TLS13-AES-128-CCM-8-SHA256;
+    ssl_prefer_server_ciphers   on;
+    # 开启 1.3 0-RTT
+    ssl_early_data  on;
     ssl_stapling on;
     ssl_stapling_verify on;
     add_header Strict-Transport-Security "max-age=31536000";
