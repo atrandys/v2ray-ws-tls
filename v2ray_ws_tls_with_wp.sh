@@ -319,7 +319,7 @@ EOF
 cat > /etc/v2ray/myconfig.json<<-EOF
 {
 ===========配置参数=============
-地址：${domain}
+地址：${your_domain}
 端口：443
 uuid：${v2uuid}
 额外id：64
