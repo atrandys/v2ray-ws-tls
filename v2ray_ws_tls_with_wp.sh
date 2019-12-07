@@ -64,9 +64,11 @@ check_domain(){
     real_addr=`ping ${your_domain} -c 1 | sed '1{s/[^(]*(//;s/).*//;q}'`
     local_addr=`curl ipv4.icanhazip.com`
     if [ $real_addr == $local_addr ] ; then
-    	green "============================="
-		green "域名解析正常，开始安装wordpress"
-		green "============================="
+    		green "=========================================="
+		green "域名解析正常，开始安装wordpress+v2ray_ws_tls"
+		green "你选择的这个方式，稍微复杂，安装时间比较长"
+		green "请耐心等待……"
+		green "=========================================="
 	sleep 1s
 		download_wp
 		install_php7
