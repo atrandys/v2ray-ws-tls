@@ -188,7 +188,7 @@ function remove_v2ray(){
     rm -rf /usr/bin/v2ray /etc/v2ray
     rm -rf /etc/caddy /etc/ssl/caddy 
     rm -rf /var/www/ 
-    rm -rf /usr/local/bin
+    rm -rf /usr/local/bin/caddy
     
     
     green "caddy、v2ray已删除"
