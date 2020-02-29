@@ -187,20 +187,20 @@ function remove_v2ray(){
 
 function start_menu(){
     clear
-    green " ===================================="
-    green " 介绍：一键安装v2ray+ws+tls        "
-    green " 系统：centos7                       "
-    green " 作者：atrandys                      "
-    green " 网站：www.atrandys.com              "
-    green " Youtube：atrandys                   "
-    green " ===================================="
+    green " ==========================================="
+    green " Info   ：onekey script install v2ray+ws+tls        "
+    green " OS     ：centos7+/debian9+/ubuntu16.04+                       "
+    green " Author ：Atrandys                      "
+    green " WebSite：www.atrandys.com              "
+    green " YouTube：Randy's 堡垒                   "
+    green " ==========================================="
     echo
-    green " 1. 安装v2ray+ws+tls1.3"
-    green " 2. 升级v2ray"
-    red " 3. 卸载v2ray"
-    yellow " 0. 退出脚本"
+    green " 1. install v2ray+ws+tls1.3"
+    green " 2. update v2ray"
+    red " 3. remove v2ray"
+    yellow " 0. exit"
     echo
-    read -p "请输入数字:" num
+    read -p "Pls enter a number:" num
     case "$num" in
     1)
     install_caddy
@@ -217,7 +217,7 @@ function start_menu(){
     ;;
     *)
     clear
-    red "请输入正确数字"
+    red "Enter the correct number"
     sleep 2s
     start_menu
     ;;
