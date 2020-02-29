@@ -170,22 +170,23 @@ green
 
 function remove_v2ray(){
 
-    /etc/nginx/sbin/nginx -s stop
+    systemctl stop caddy.service
+    systemctl disable caddy.service
     systemctl stop v2ray.service
     systemctl disable v2ray.service
     
     rm -rf /usr/bin/v2ray /etc/v2ray
     rm -rf /etc/v2ray
-    rm -rf /etc/nginx
+    rm -rf /etc/caddy
     
-    green "nginx、v2ray已删除"
+    green "caddy、v2ray已删除"
     
 }
 
 function start_menu(){
     clear
     green " ===================================="
-    green " 介绍：一键安装v2ray+ws+tls1.3        "
+    green " 介绍：一键安装v2ray+ws+tls        "
     green " 系统：centos7                       "
     green " 作者：atrandys                      "
     green " 网站：www.atrandys.com              "
@@ -200,7 +201,7 @@ function start_menu(){
     read -p "请输入数字:" num
     case "$num" in
     1)
-    install_nginx
+    install_caddy
     install_v2ray
     ;;
     2)
