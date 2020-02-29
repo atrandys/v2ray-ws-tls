@@ -105,9 +105,12 @@ function install_caddy(){
 	chown www-data:www-data /var/www
 	cd /etc/systemd/system
 	curl -O https://raw.githubusercontent.com/mholt/caddy/master/dist/init/linux-systemd/caddy.service
+	newpath=$(cat /dev/urandom | head -1 | md5sum | head -c 4)
+	sed -i 's/;CapabilityBoundingSet=CAP_NET_BIND_SERVICE/CapabilityBoundingSet=CAP_NET_BIND_SERVICE/g' /etc/systemd/system/caddy.service
+	sed -i 's/;AmbientCapabilities=CAP_NET_BIND_SERVICE/AmbientCapabilities=CAP_NET_BIND_SERVICE/g' /etc/systemd/system/caddy.service
+	sed -i 's/;NoNewPrivileges=true/NoNewPrivileges=true/g' /etc/systemd/system/caddy.service
 	systemctl daemon-reload
 	systemctl enable caddy.service
-	newpath=$(cat /dev/urandom | head -1 | md5sum | head -c 4)
 	cat > /etc/caddy/Caddyfile <<-EOF
 $your_domain
 {
