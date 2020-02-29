@@ -55,11 +55,6 @@ elif [ "$release" == "ubuntu" ]; then
     apt-get update
 elif [ "$release" == "debian" ]; then
     apt-get update
-    if  [ -n "$(grep ' 9' /etc/os-release)" ] ;then
-    	if [ ! -d "/usr/local/bin/" ]; then
-	    mkdir /usr/local/bin
-	fi
-    fi
 fi
 
 if [ -f "/etc/selinux/config" ]; then
