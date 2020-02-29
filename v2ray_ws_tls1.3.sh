@@ -176,8 +176,10 @@ function remove_v2ray(){
     systemctl disable v2ray.service
     
     rm -rf /usr/bin/v2ray /etc/v2ray
-    rm -rf /etc/v2ray
-    rm -rf /etc/caddy
+    rm -rf /etc/caddy /etc/ssl/caddy 
+    rm -rf /var/www/ 
+    rm -rf /usr/local/bin
+    
     
     green "caddy、v2ray已删除"
     
