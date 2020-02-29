@@ -118,42 +118,26 @@ $your_domain
   }
 }
 EOF
+    systemctl start caddy.service
+    fi
 }
 #安装v2ray
 function install_v2ray(){
     
-    yum install -y wget
+    $systemPackage install -y wget curl unzip
     bash <(curl -L -s https://install.direct/go.sh)  
     cd /etc/v2ray/
     rm -f config.json
     wget https://raw.githubusercontent.com/atrandys/v2ray-ws-tls/master/config.json
     v2uuid=$(cat /proc/sys/kernel/random/uuid)
     sed -i "s/aaaa/$v2uuid/;" config.json
-    newpath=$(cat /dev/urandom | head -1 | md5sum | head -c 4)
     sed -i "s/mypath/$newpath/;" config.json
-    sed -i "s/mypath/$newpath/;" /etc/nginx/conf.d/default.conf
-    cd /etc/nginx/html
-    rm -f /etc/nginx/html/*
+    cd /var/www/
     wget https://github.com/atrandys/v2ray-ws-tls/raw/master/web.zip
     unzip web.zip
-    /etc/nginx/sbin/nginx -s stop
-    /etc/nginx/sbin/nginx
     systemctl restart v2ray.service
-    systemctl enable v2ray.service
+    systemctl restart caddy.service
     
-    #增加自启动脚本
-cat > /etc/rc.d/init.d/autov2ray<<-EOF
-#!/bin/sh
-#chkconfig: 2345 80 90
-#description:autov2ray
-/etc/nginx/sbin/nginx
-EOF
-
-    #设置脚本权限
-    chmod +x /etc/rc.d/init.d/autov2ray
-    chkconfig --add autov2ray
-    chkconfig autov2ray on
-
 cat > /etc/v2ray/myconfig.json<<-EOF
 {
 ===========配置参数=============
@@ -169,10 +153,8 @@ uuid：${v2uuid}
 }
 EOF
 
-clear
-green
-green "安装已经完成"
-green 
+green "=============================="
+green "         安装已经完成"
 green "===========配置参数============"
 green "地址：${domain}"
 green "端口：443"
