@@ -88,7 +88,7 @@ function install_caddy(){
     blue "请输入绑定到本VPS的域名"
     green "======================="
     read your_domain
-    real_addr=`ping -4 ${your_domain} -c 1 | sed '1{s/[^(]*(//;s/).*//;q}'`
+    real_addr=`ping ${your_domain} -c 1 | sed '1{s/[^(]*(//;s/).*//;q}'`
     local_addr=`curl ipv4.icanhazip.com`
     if [ $real_addr == $local_addr ] ; then
         green "=========================================="
@@ -120,6 +120,12 @@ $your_domain
 }
 EOF
     systemctl start caddy.service
+    else
+        red "================================"
+        red "域名解析地址与本VPS IP地址不一致"
+        red "本次安装失败，请确保域名解析正常"
+        red "================================"
+	exit 1
     fi
 }
 #安装v2ray
