@@ -83,6 +83,7 @@ function yellow(){
 
 #安装caddy
 function install_caddy(){
+    $systemPackage install -y wget curl unzip
     green "======================="
     blue "请输入绑定到本VPS的域名"
     green "======================="
@@ -124,7 +125,6 @@ EOF
 #安装v2ray
 function install_v2ray(){
     
-    $systemPackage install -y wget curl unzip
     bash <(curl -L -s https://install.direct/go.sh)  
     cd /etc/v2ray/
     rm -f config.json
