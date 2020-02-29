@@ -1,147 +1,126 @@
 #!/bin/bash
-#判断系统
-if [ ! -e '/etc/redhat-release' ]; then
-echo "仅支持centos7"
-exit
+if [[ -f /etc/redhat-release ]]; then
+    release="centos"
+    systemPackage="yum"
+elif cat /etc/issue | grep -Eqi "debian"; then
+    release="debian"
+    systemPackage="apt-get"
+elif cat /etc/issue | grep -Eqi "ubuntu"; then
+    release="ubuntu"
+    systemPackage="apt-get"
+elif cat /etc/issue | grep -Eqi "centos|red hat|redhat"; then
+    release="centos"
+    systemPackage="yum"
+elif cat /proc/version | grep -Eqi "debian"; then
+    release="debian"
+    systemPackage="apt-get"
+elif cat /proc/version | grep -Eqi "ubuntu"; then
+    release="ubuntu"
+    systemPackage="apt-get"
+elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
+    release="centos"
+    systemPackage="yum"
 fi
-if  [ -n "$(grep ' 6\.' /etc/redhat-release)" ] ;then
-echo "仅支持centos7"
-exit
-fi
 
-function blue(){
-    echo -e "\033[34m\033[01m $1 \033[0m"
-}
-function green(){
-    echo -e "\033[32m\033[01m $1 \033[0m"
-}
-function red(){
-    echo -e "\033[31m\033[01m $1 \033[0m"
-}
-function yellow(){
-    echo -e "\033[33m\033[01m $1 \033[0m"
-}
-
-
-#安装nginx
-install_nginx(){
-    green "====编译安装nginx耗时时间较长，请耐心等待===="
-    sleep 1
+if [ "$release" == "centos" ]; then
+    if  [ -n "$(grep ' 6\.' /etc/redhat-release)" ] ;then
+    red "==============="
+    red "当前系统不受支持"
+    red "==============="
+    exit
+    fi
+    if  [ -n "$(grep ' 5\.' /etc/redhat-release)" ] ;then
+    red "==============="
+    red "当前系统不受支持"
+    red "==============="
+    exit
+    fi
     systemctl stop firewalld
     systemctl disable firewalld
+    rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+elif [ "$release" == "ubuntu" ]; then
+    if  [ -n "$(grep ' 14\.' /etc/os-release)" ] ;then
+    red "==============="
+    red "当前系统不受支持"
+    red "==============="
+    exit
+    fi
+    if  [ -n "$(grep ' 12\.' /etc/os-release)" ] ;then
+    red "==============="
+    red "当前系统不受支持"
+    red "==============="
+    exit
+    fi
+    systemctl stop ufw
+    systemctl disable ufw
+    apt-get update
+elif [ "$release" == "debian" ]; then
+    apt-get update
+fi
+
+if [ -f "/etc/selinux/config" ]; then
     CHECK=$(grep SELINUX= /etc/selinux/config | grep -v "#")
-    if [ "$CHECK" == "SELINUX=enforcing" ]; then
-        sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
-        setenforce 0
+    if [ "$CHECK" != "SELINUX=disabled" ]; then
+        semanage port -a -t http_port_t -p tcp 80
+        semanage port -a -t http_port_t -p tcp 443
     fi
-    if [ "$CHECK" == "SELINUX=permissive" ]; then
-         sed -i 's/SELINUX=permissive/SELINUX=disabled/g' /etc/selinux/config
-         setenforce 0
-    fi
-    yum install -y libtool perl-core zlib-devel gcc wget pcre* unzip
-    wget https://www.openssl.org/source/openssl-1.1.1a.tar.gz
-    tar xzvf openssl-1.1.1a.tar.gz
-    
-    mkdir /etc/nginx
-    mkdir /etc/nginx/ssl
-    mkdir /etc/nginx/conf.d
-    wget https://nginx.org/download/nginx-1.15.8.tar.gz
-    tar xf nginx-1.15.8.tar.gz && rm nginx-1.15.8.tar.gz
-    cd nginx-1.15.8
-    ./configure --prefix=/etc/nginx --with-openssl=../openssl-1.1.1a --with-openssl-opt='enable-tls1_3' --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_sub_module --with-stream --with-stream_ssl_module
-    make && make install
-    
-    green "====输入解析到此VPS的域名===="
-    read domain
-    
-cat > /etc/nginx/conf/nginx.conf <<-EOF
-user  root;
-worker_processes  1;
-error_log  /etc/nginx/logs/error.log warn;
-pid        /etc/nginx/logs/nginx.pid;
-events {
-    worker_connections  1024;
-}
-http {
-    include       /etc/nginx/conf/mime.types;
-    default_type  application/octet-stream;
-    log_format  main  '\$remote_addr - \$remote_user [\$time_local] "\$request" '
-                      '\$status \$body_bytes_sent "\$http_referer" '
-                      '"\$http_user_agent" "\$http_x_forwarded_for"';
-    access_log  /etc/nginx/logs/access.log  main;
-    sendfile        on;
-    #tcp_nopush     on;
-    keepalive_timeout  120;
-    client_max_body_size 20m;
-    #gzip  on;
-    include /etc/nginx/conf.d/*.conf;
-}
-EOF
+fi
 
-cat > /etc/nginx/conf.d/default.conf<<-EOF
-server {
-    listen       80;
-    server_name  $domain;
-    root /etc/nginx/html;
-    index index.php index.html index.htm;
-    location / {
-        try_files \$uri \$uri/ /index.php?\$args;
-    }
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-        root   /etc/nginx/html;
-    }
-}
-EOF
 
-    /etc/nginx/sbin/nginx
-
-    curl https://get.acme.sh | sh
-    ~/.acme.sh/acme.sh  --issue  -d $domain  --webroot /etc/nginx/html/
-    ~/.acme.sh/acme.sh  --installcert  -d  $domain   \
-        --key-file   /etc/nginx/ssl/$domain.key \
-        --fullchain-file /etc/nginx/ssl/fullchain.cer \
-        --reloadcmd  "/etc/nginx/sbin/nginx -s reload"
-	
-cat > /etc/nginx/conf.d/default.conf<<-EOF
-server { 
-    listen       80;
-    server_name  $domain;
-    rewrite ^(.*)$  https://\$host\$1 permanent; 
+function blue(){
+    echo -e "\033[34m\033[01m$1\033[0m"
 }
-server {
-    listen 443 ssl http2;
-    server_name $domain;
-    root /etc/nginx/html;
-    index index.php index.html;
-    ssl_certificate /etc/nginx/ssl/fullchain.cer; 
-    ssl_certificate_key /etc/nginx/ssl/$domain.key;
-    #TLS 版本控制
-    ssl_protocols   TLSv1.3;
-    ssl_ciphers     TLS13-AES-256-GCM-SHA384:TLS13-CHACHA20-POLY1305-SHA256:TLS13-AES-128-GCM-SHA256:TLS13-AES-128-CCM-8-SHA256;
-    ssl_prefer_server_ciphers   on;
-    # 开启 1.3 0-RTT
-    ssl_early_data  on;
-    ssl_stapling on;
-    ssl_stapling_verify on;
-    #add_header Strict-Transport-Security "max-age=31536000";
-    #access_log /var/log/nginx/access.log combined;
-    location /mypath {
-        proxy_redirect off;
-        proxy_pass http://127.0.0.1:11234; 
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host \$http_host;
-    }
-    location / {
-       try_files \$uri \$uri/ /index.php?\$args;
-    }
+function green(){
+    echo -e "\033[32m\033[01m$1\033[0m"
+}
+function red(){
+    echo -e "\033[31m\033[01m$1\033[0m"
+}
+function yellow(){
+    echo -e "\033[33m\033[01m$1\033[0m"
+}
+
+
+#安装caddy
+function install_caddy(){
+    green "======================="
+    blue "请输入绑定到本VPS的域名"
+    green "======================="
+    read your_domain
+    real_addr=`ping -4 ${your_domain} -c 1 | sed '1{s/[^(]*(//;s/).*//;q}'`
+    local_addr=`curl ipv4.icanhazip.com`
+    if [ $real_addr == $local_addr ] ; then
+        green "=========================================="
+	green "       域名解析正常，开始安装trojan"
+	green "=========================================="
+	curl https://getcaddy.com | bash -s personal
+	useradd -M -s /usr/sbin/nologin www-data
+	mkdir /etc/caddy
+	touch /etc/caddy/Caddyfile
+	chown -R root:www-data /etc/caddy
+	mkdir /etc/ssl/caddy
+	chown -R www-data:root /etc/ssl/caddy
+	chmod 0770 /etc/ssl/caddy
+	mkdir /var/www
+	chown www-data:www-data /var/www
+	cd /etc/systemd/system
+	curl -O https://raw.githubusercontent.com/mholt/caddy/master/dist/init/linux-systemd/caddy.service
+	systemctl daemon-reload
+	systemctl enable caddy.service
+	newpath=$(cat /dev/urandom | head -1 | md5sum | head -c 4)
+	cat > /etc/nginx/nginx.conf <<-EOF
+$your_domain
+{
+  root /var/www/
+  proxy /$newpath localhost:11234 {
+    websocket
+    header_upstream -Origin
+  }
 }
 EOF
 }
 #安装v2ray
-install_v2ray(){
+function install_v2ray(){
     
     yum install -y wget
     bash <(curl -L -s https://install.direct/go.sh)  
@@ -207,7 +186,7 @@ green "底层传输：tls"
 green 
 }
 
-remove_v2ray(){
+function remove_v2ray(){
 
     /etc/nginx/sbin/nginx -s stop
     systemctl stop v2ray.service
@@ -221,7 +200,7 @@ remove_v2ray(){
     
 }
 
-start_menu(){
+function start_menu(){
     clear
     green " ===================================="
     green " 介绍：一键安装v2ray+ws+tls1.3        "
