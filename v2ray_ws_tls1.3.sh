@@ -192,13 +192,13 @@ function remove_v2ray(){
 
 function start_menu(){
     clear
-    green " ==========================================="
-    green " Info   ：onekey script install v2ray+ws+tls        "
-    green " OS     ：centos7+/debian9+/ubuntu16.04+                       "
-    green " Author ：Atrandys                      "
-    green " WebSite：www.atrandys.com              "
-    green " YouTube：Randy's 堡垒                   "
-    green " ==========================================="
+    green " ==============================================="
+    green " Info       : onekey script install v2ray+ws+tls        "
+    green " OS support : centos7+/debian9+/ubuntu16.04+                       "
+    green " Author     : Atrandys                      "
+    green " WebSite    : www.atrandys.com              "
+    green " YouTube    : Randy's 堡垒                   "
+    green " ==============================================="
     echo
     green " 1. install v2ray+ws+tls1.3"
     green " 2. update v2ray"
