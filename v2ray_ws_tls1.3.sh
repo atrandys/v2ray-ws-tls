@@ -109,7 +109,7 @@ function install_caddy(){
 	systemctl daemon-reload
 	systemctl enable caddy.service
 	newpath=$(cat /dev/urandom | head -1 | md5sum | head -c 4)
-	cat > /etc/nginx/nginx.conf <<-EOF
+	cat > /etc/caddy/Caddyfile <<-EOF
 $your_domain
 {
   root /var/www/
@@ -141,7 +141,7 @@ function install_v2ray(){
 cat > /etc/v2ray/myconfig.json<<-EOF
 {
 ===========配置参数=============
-地址：${domain}
+地址：${your_domain}
 端口：443
 uuid：${v2uuid}
 额外id：64
@@ -156,7 +156,7 @@ EOF
 green "=============================="
 green "         安装已经完成"
 green "===========配置参数============"
-green "地址：${domain}"
+green "地址：${your_domain}"
 green "端口：443"
 green "uuid：${v2uuid}"
 green "额外id：64"
