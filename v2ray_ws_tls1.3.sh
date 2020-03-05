@@ -91,7 +91,7 @@ function install_caddy(){
     local_addr=`curl ipv4.icanhazip.com`
     if [ $real_addr == $local_addr ] ; then
         green "=========================================="
-	green "       域名解析正常，开始安装trojan"
+	green "         域名解析正常，开始安装"
 	green "=========================================="
 	curl https://getcaddy.com | bash -s personal
 	useradd -M -s /usr/sbin/nologin www-data
