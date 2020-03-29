@@ -171,7 +171,7 @@ server {
     ssl_stapling_verify on;
     #add_header Strict-Transport-Security "max-age=31536000";
     #access_log /var/log/nginx/access.log combined;
-    location /newpath {
+    location /$newpath {
         proxy_redirect off;
         proxy_pass http://127.0.0.1:11234; 
         proxy_http_version 1.1;
