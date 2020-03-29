@@ -147,7 +147,7 @@ EOF
     ~/.acme.sh/acme.sh  --installcert  -d  $your_domain   \
         --key-file   /etc/nginx/ssl/$your_domain.key \
         --fullchain-file /etc/nginx/ssl/fullchain.cer
-	
+    newpath=$(cat /dev/urandom | head -1 | md5sum | head -c 4)
 cat > /etc/nginx/conf.d/default.conf<<-EOF
 server { 
     listen       80;
@@ -171,7 +171,7 @@ server {
     ssl_stapling_verify on;
     #add_header Strict-Transport-Security "max-age=31536000";
     #access_log /var/log/nginx/access.log combined;
-    location /mypath {
+    location /newpath {
         proxy_redirect off;
         proxy_pass http://127.0.0.1:11234; 
         proxy_http_version 1.1;
