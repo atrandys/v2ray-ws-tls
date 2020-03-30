@@ -21,8 +21,9 @@ elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
     release="centos"
     systemPackage="yum"
 fi
-
-$systemPackage -y install net-tools socat
+green "准备安装环境"
+sleep 3s
+$systemPackage -y install net-tools socat >/dev/null 2>&1
 Port80=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 80`
 Port443=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 443`
 if [ -n "$Port80" ]; then
@@ -60,9 +61,9 @@ if [ "$release" == "centos" ]; then
 	firewall-cmd --zone=public --add-port=443/tcp --permanent
 	firewall-cmd --reload
     fi
-    rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+    rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm >/dev/null 2>&1
     green "开始安装nginx编译依赖"
-    yum install -y libtool perl-core zlib-devel gcc pcre*
+    yum install -y libtool perl-core zlib-devel gcc pcre* >/dev/null 2>&1
 elif [ "$release" == "ubuntu" ]; then
     if  [ -n "$(grep ' 14\.' /etc/os-release)" ] ;then
     red "==============="
@@ -78,13 +79,13 @@ elif [ "$release" == "ubuntu" ]; then
     fi
     systemctl stop ufw
     systemctl disable ufw
-    apt-get update
+    apt-get update >/dev/null 2>&1
     green "开始安装nginx编译依赖"
-    apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev liblua5.1-dev libluajit-5.1-dev libgeoip-dev google-perftools libgoogle-perftools-dev
+    apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev liblua5.1-dev libluajit-5.1-dev libgeoip-dev google-perftools libgoogle-perftools-dev >/dev/null 2>&1
 elif [ "$release" == "debian" ]; then
-    apt-get update
+    apt-get update >/dev/null 2>&1
     green "开始安装nginx编译依赖"
-    apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev liblua5.1-dev libluajit-5.1-dev libgeoip-dev google-perftools libgoogle-perftools-dev
+    apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev liblua5.1-dev libluajit-5.1-dev libgeoip-dev google-perftools libgoogle-perftools-dev >/dev/null 2>&1
 fi
 
 if [ -f "/etc/selinux/config" ]; then
@@ -111,16 +112,18 @@ function yellow(){
 
 function install_nginx(){
 
-    wget https://www.openssl.org/source/openssl-1.1.1a.tar.gz
-    tar xzvf openssl-1.1.1a.tar.gz    
+    wget https://www.openssl.org/source/openssl-1.1.1a.tar.gz >/dev/null 2>&1
+    tar xzvf openssl-1.1.1a.tar.gz >/dev/null 2>&1
     mkdir /etc/nginx
     mkdir /etc/nginx/ssl
     mkdir /etc/nginx/conf.d
-    wget https://nginx.org/download/nginx-1.15.8.tar.gz
-    tar xf nginx-1.15.8.tar.gz && rm nginx-1.15.8.tar.gz
+    wget https://nginx.org/download/nginx-1.15.8.tar.gz >/dev/null 2>&1
+    tar xf nginx-1.15.8.tar.gz && rm nginx-1.15.8.tar.gz >/dev/null 2>&1
     cd nginx-1.15.8
     ./configure --prefix=/etc/nginx --with-openssl=../openssl-1.1.1a --with-openssl-opt='enable-tls1_3' --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_sub_module --with-stream --with-stream_ssl_module
-    make && make install
+    green "开始编译安装nginx，等待时间可能较长，请耐心等待"
+    sleep 3s
+    make && make install >/dev/null 2>&1
     
 cat > /etc/nginx/conf/nginx.conf <<-EOF
 user  root;
@@ -209,9 +212,7 @@ install_v2ray
 
 #安装nginx
 function install(){
-    green "脚本将编译安装nginx支持tls1.3，编译受硬件影响可能时间较长"
-    sleep 3s
-    $systemPackage install -y wget curl unzip
+    $systemPackage install -y wget curl unzip >/dev/null 2>&1
     green "======================="
     blue "请输入绑定到本VPS的域名"
     green "======================="
@@ -245,14 +246,14 @@ function install_v2ray(){
     bash <(curl -L -s https://install.direct/go.sh)  
     cd /etc/v2ray/
     rm -f config.json
-    wget https://raw.githubusercontent.com/atrandys/v2ray-ws-tls/master/config.json
+    wget https://raw.githubusercontent.com/atrandys/v2ray-ws-tls/master/config.json >/dev/null 2>&1
     v2uuid=$(cat /proc/sys/kernel/random/uuid)
     sed -i "s/aaaa/$v2uuid/;" config.json
     sed -i "s/mypath/$newpath/;" config.json
     cd /etc/nginx/html
     rm -f ./*
-    wget https://github.com/atrandys/v2ray-ws-tls/raw/master/web.zip
-    unzip web.zip
+    wget https://github.com/atrandys/v2ray-ws-tls/raw/master/web.zip >/dev/null 2>&1
+    unzip web.zip >/dev/null 2>&1
     systemctl restart v2ray.service
     systemctl restart nginx.service    
     
