@@ -77,8 +77,11 @@ elif [ "$release" == "ubuntu" ]; then
     red "==============="
     exit
     fi
-    systemctl stop ufw
-    systemctl disable ufw
+    ufw_status=`systemctl status ufw | grep "Active: active"`
+    if [ -n "$ufw_status" ]; then
+        ufw allow 80/tcp
+        ufw allow 443/tcp
+    fi
     apt-get update >/dev/null 2>&1
     green "开始安装nginx编译依赖"
     apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev liblua5.1-dev libluajit-5.1-dev libgeoip-dev google-perftools libgoogle-perftools-dev >/dev/null 2>&1
