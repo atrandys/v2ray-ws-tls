@@ -11,6 +11,10 @@ function red(){
 function yellow(){
     echo -e "\033[33m\033[01m$1\033[0m"
 }
+
+function check_os(){
+green "系统支持检测"
+sleep 3s
 if [[ -f /etc/redhat-release ]]; then
     release="centos"
     systemPackage="yum"
@@ -33,26 +37,6 @@ elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
     release="centos"
     systemPackage="yum"
 fi
-green "准备安装环境"
-sleep 3s
-$systemPackage -y install net-tools socat >/dev/null 2>&1
-Port80=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 80`
-Port443=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 443`
-if [ -n "$Port80" ]; then
-    process80=`netstat -tlpn | awk -F '[: ]+' '$5=="80"{print $9}'`
-    red "==========================================================="
-    red "检测到80端口被占用，占用进程为：${process80}，本次安装结束"
-    red "==========================================================="
-    exit 1
-fi
-if [ -n "$Port443" ]; then
-    process443=`netstat -tlpn | awk -F '[: ]+' '$5=="443"{print $9}'`
-    red "============================================================="
-    red "检测到443端口被占用，占用进程为：${process443}，本次安装结束"
-    red "============================================================="
-    exit 1
-fi
-
 if [ "$release" == "centos" ]; then
     if  [ -n "$(grep ' 6\.' /etc/redhat-release)" ] ;then
     red "==============="
@@ -65,13 +49,6 @@ if [ "$release" == "centos" ]; then
     red "当前系统不受支持"
     red "==============="
     exit
-    fi
-    firewall_status=`firewall-cmd --state`
-    if [ "$firewall_status" == "running" ]; then
-        green "检测到firewalld开启状态，添加放行80/443端口规则"
-        firewall-cmd --zone=public --add-port=80/tcp --permanent
-	firewall-cmd --zone=public --add-port=443/tcp --permanent
-	firewall-cmd --reload
     fi
     rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm >/dev/null 2>&1
     green "开始安装nginx编译依赖"
@@ -96,21 +73,51 @@ elif [ "$release" == "ubuntu" ]; then
     fi
     apt-get update >/dev/null 2>&1
     green "开始安装nginx编译依赖"
-    apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev liblua5.1-dev libluajit-5.1-dev libgeoip-dev google-perftools libgoogle-perftools-dev >/dev/null 2>&1
+    apt-get install -y build-essential libpcre3 libpcre3-dev zlib1g-dev liblua5.1-dev libluajit-5.1-dev libgeoip-dev google-perftools libgoogle-perftools-dev >/dev/null 2>&1
 elif [ "$release" == "debian" ]; then
     apt-get update >/dev/null 2>&1
     green "开始安装nginx编译依赖"
-    apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev liblua5.1-dev libluajit-5.1-dev libgeoip-dev google-perftools libgoogle-perftools-dev >/dev/null 2>&1
+    apt-get install -y build-essential libpcre3 libpcre3-dev zlib1g-dev liblua5.1-dev libluajit-5.1-dev libgeoip-dev google-perftools libgoogle-perftools-dev >/dev/null 2>&1
 fi
+}
 
+function check_env(){
+green "安装环境监测"
+sleep 3s
 if [ -f "/etc/selinux/config" ]; then
     CHECK=$(grep SELINUX= /etc/selinux/config | grep -v "#")
     if [ "$CHECK" != "SELINUX=disabled" ]; then
+        green "检测到SELinux开启状态，添加开放80/443端口规则"
+	yum install -y policycoreutils-python >/dev/null 2>&1
         semanage port -a -t http_port_t -p tcp 80
         semanage port -a -t http_port_t -p tcp 443
     fi
 fi
-
+firewall_status=`firewall-cmd --state`
+if [ "$firewall_status" == "running" ]; then
+    green "检测到firewalld开启状态，添加放行80/443端口规则"
+    firewall-cmd --zone=public --add-port=80/tcp --permanent
+    firewall-cmd --zone=public --add-port=443/tcp --permanent
+    firewall-cmd --reload
+fi
+$systemPackage -y install net-tools socat >/dev/null 2>&1
+Port80=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 80`
+Port443=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 443`
+if [ -n "$Port80" ]; then
+    process80=`netstat -tlpn | awk -F '[: ]+' '$5=="80"{print $9}'`
+    red "==========================================================="
+    red "检测到80端口被占用，占用进程为：${process80}，本次安装结束"
+    red "==========================================================="
+    exit 1
+fi
+if [ -n "$Port443" ]; then
+    process443=`netstat -tlpn | awk -F '[: ]+' '$5=="443"{print $9}'`
+    red "============================================================="
+    red "检测到443端口被占用，占用进程为：${process443}，本次安装结束"
+    red "============================================================="
+    exit 1
+fi
+}
 function install_nginx(){
 
     wget https://www.openssl.org/source/openssl-1.1.1a.tar.gz >/dev/null 2>&1
@@ -124,7 +131,8 @@ function install_nginx(){
     ./configure --prefix=/etc/nginx --with-openssl=../openssl-1.1.1a --with-openssl-opt='enable-tls1_3' --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_sub_module --with-stream --with-stream_ssl_module
     green "开始编译安装nginx，等待时间可能较长，请耐心等待"
     sleep 3s
-    make && make install >/dev/null 2>&1
+    make >/dev/null 2>&1
+    make install >/dev/null 2>&1
     
 cat > /etc/nginx/conf/nginx.conf <<-EOF
 user  root;
@@ -320,6 +328,8 @@ function start_menu(){
     read -p "Pls enter a number:" num
     case "$num" in
     1)
+    check_os
+    check_env
     install
     ;;
     2)
