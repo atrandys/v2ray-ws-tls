@@ -250,6 +250,7 @@ function install_v2ray(){
     sed -i "s/aaaa/$v2uuid/;" config.json
     sed -i "s/mypath/$newpath/;" config.json
     cd /etc/nginx/html
+    rm -f ./*
     wget https://github.com/atrandys/v2ray-ws-tls/raw/master/web.zip
     unzip web.zip
     systemctl restart v2ray.service
