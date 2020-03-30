@@ -1,4 +1,16 @@
 #!/bin/bash
+function blue(){
+    echo -e "\033[34m\033[01m$1\033[0m"
+}
+function green(){
+    echo -e "\033[32m\033[01m$1\033[0m"
+}
+function red(){
+    echo -e "\033[31m\033[01m$1\033[0m"
+}
+function yellow(){
+    echo -e "\033[33m\033[01m$1\033[0m"
+}
 if [[ -f /etc/redhat-release ]]; then
     release="centos"
     systemPackage="yum"
@@ -98,20 +110,6 @@ if [ -f "/etc/selinux/config" ]; then
         semanage port -a -t http_port_t -p tcp 443
     fi
 fi
-
-
-function blue(){
-    echo -e "\033[34m\033[01m$1\033[0m"
-}
-function green(){
-    echo -e "\033[32m\033[01m$1\033[0m"
-}
-function red(){
-    echo -e "\033[31m\033[01m$1\033[0m"
-}
-function yellow(){
-    echo -e "\033[33m\033[01m$1\033[0m"
-}
 
 function install_nginx(){
 
