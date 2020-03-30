@@ -320,10 +320,10 @@ function start_menu(){
     green " YouTube    : Randy's 堡垒                   "
     green " ==============================================="
     echo
-    green " 1. install v2ray+ws+tls1.3"
-    green " 2. update v2ray"
-    red " 3. remove v2ray"
-    yellow " 0. exit"
+    green " 1. Install v2ray+ws+tls1.3"
+    green " 2. Update v2ray"
+    red " 3. Remove v2ray"
+    yellow " 0. Exit"
     echo
     read -p "Pls enter a number:" num
     case "$num" in
