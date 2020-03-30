@@ -129,7 +129,7 @@ function install_nginx(){
     tar xf nginx-1.15.8.tar.gz && rm nginx-1.15.8.tar.gz >/dev/null 2>&1
     cd nginx-1.15.8
     ./configure --prefix=/etc/nginx --with-openssl=../openssl-1.1.1a --with-openssl-opt='enable-tls1_3' --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_sub_module --with-stream --with-stream_ssl_module  >/dev/null 2>&1
-    green "开始编译安装nginx，编译等待时间可能较长，请耐心等待"
+    green "开始编译安装nginx，编译等待时间可能较长，请耐心等待，通常需要几到十几分钟"
     sleep 3s
     make >/dev/null 2>&1
     make install >/dev/null 2>&1
