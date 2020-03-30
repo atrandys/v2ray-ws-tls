@@ -61,6 +61,7 @@ if [ "$release" == "centos" ]; then
 	firewall-cmd --reload
     fi
     rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+    green "开始安装nginx编译依赖"
     yum install -y libtool perl-core zlib-devel gcc pcre*
 elif [ "$release" == "ubuntu" ]; then
     if  [ -n "$(grep ' 14\.' /etc/os-release)" ] ;then
@@ -78,9 +79,11 @@ elif [ "$release" == "ubuntu" ]; then
     systemctl stop ufw
     systemctl disable ufw
     apt-get update
+    green "开始安装nginx编译依赖"
     apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev liblua5.1-dev libluajit-5.1-dev libgeoip-dev google-perftools libgoogle-perftools-dev
 elif [ "$release" == "debian" ]; then
     apt-get update
+    green "开始安装nginx编译依赖"
     apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev liblua5.1-dev libluajit-5.1-dev libgeoip-dev google-perftools libgoogle-perftools-dev
 fi
 
@@ -206,6 +209,8 @@ install_v2ray
 
 #安装nginx
 function install(){
+    green "脚本将编译安装nginx支持tls1.3，编译受硬件影响可能时间较长"
+    sleep 3s
     $systemPackage install -y wget curl unzip
     green "======================="
     blue "请输入绑定到本VPS的域名"
