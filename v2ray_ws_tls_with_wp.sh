@@ -382,6 +382,8 @@ download_wp(){
 
     yum install -y wget tar unzip >/dev/null 2>&1
     mkdir /usr/share/wordpresstemp
+    mkdir /usr/share/nginx/
+    mkdir /usr/share/nginx/html
     cd /usr/share/wordpresstemp/
     wget https://cn.wordpress.org/latest-zh_CN.zip
     if [ ! -f "/usr/share/wordpresstemp/latest-zh_CN.zip" ]; then
