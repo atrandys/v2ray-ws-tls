@@ -36,7 +36,7 @@ install_nginx(){
     systemctl stop firewalld
     systemctl disable firewalld
     yum install -y libtool perl-core zlib-devel gcc wget pcre* unzip
-    wget https://www.openssl.org/source/openssl-1.1.1a.tar.gz
+    wget https://www.openssl.org/source/old/1.1.1/openssl-1.1.1a.tar.gz
     tar xzvf openssl-1.1.1a.tar.gz
     
     mkdir /etc/nginx
