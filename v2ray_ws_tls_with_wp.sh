@@ -59,7 +59,7 @@ if [ "$firewall_status" == "running" ]; then
     firewall-cmd --zone=public --add-port=443/tcp --permanent
     firewall-cmd --reload
 fi
-$systemPackage -y install net-tools socat >/dev/null 2>&1
+yum -y install net-tools socat >/dev/null 2>&1
 Port80=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 80`
 Port443=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 443`
 if [ -n "$Port80" ]; then
