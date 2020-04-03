@@ -206,7 +206,7 @@ install_nginx(){
     green "  5.安装nginx"
     green "==============="
     sleep 1
-    wget https://www.openssl.org/source/openssl-1.1.1a.tar.gz
+    wget https://www.openssl.org/source/old/1.1.1/openssl-1.1.1a.tar.gz
     tar xzvf openssl-1.1.1a.tar.gz
     
     mkdir /etc/nginx
@@ -261,10 +261,9 @@ http {
 }
 EOF
 	
-	/etc/nginx/sbin/nginx 
 
     curl https://get.acme.sh | sh
-    ~/.acme.sh/acme.sh  --issue  -d $your_domain  --webroot /usr/share/nginx/html/
+    ~/.acme.sh/acme.sh  --issue  -d $your_domain  --standalone
     ~/.acme.sh/acme.sh  --installcert  -d  $your_domain   \
         --key-file   /etc/nginx/ssl/$your_domain.key \
         --fullchain-file /etc/nginx/ssl/fullchain.cer \
@@ -381,7 +380,7 @@ config_php(){
 
 download_wp(){
 
-    yum install -y wget >/dev/null 2>&1
+    yum install -y wget tar unzip >/dev/null 2>&1
     mkdir /usr/share/wordpresstemp
     cd /usr/share/wordpresstemp/
     wget https://cn.wordpress.org/latest-zh_CN.zip
