@@ -381,6 +381,7 @@ config_php(){
 
 download_wp(){
 
+    yum install -y wget >/dev/null 2>&1
     mkdir /usr/share/wordpresstemp
     cd /usr/share/wordpresstemp/
     wget https://cn.wordpress.org/latest-zh_CN.zip
