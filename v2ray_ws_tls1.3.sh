@@ -120,7 +120,7 @@ fi
 }
 function install_nginx(){
 
-    wget https://www.openssl.org/source/openssl-1.1.1a.tar.gz >/dev/null 2>&1
+    wget https://www.openssl.org/source/old/1.1.1/openssl-1.1.1a.tar.gz >/dev/null 2>&1
     tar xzvf openssl-1.1.1a.tar.gz >/dev/null 2>&1
     mkdir /etc/nginx
     mkdir /etc/nginx/ssl
