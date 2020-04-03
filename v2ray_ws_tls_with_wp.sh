@@ -43,17 +43,39 @@ fi
 
 disable_selinux(){
 
-    systemctl stop firewalld
-    systemctl disable firewalld
+if [ -f "/etc/selinux/config" ]; then
     CHECK=$(grep SELINUX= /etc/selinux/config | grep -v "#")
-    if [ "$CHECK" == "SELINUX=enforcing" ]; then
-        sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
-        setenforce 0
+    if [ "$CHECK" != "SELINUX=disabled" ]; then
+        green "检测到SELinux开启状态，添加开放80/443端口规则"
+	yum install -y policycoreutils-python >/dev/null 2>&1
+        semanage port -a -t http_port_t -p tcp 80
+        semanage port -a -t http_port_t -p tcp 443
     fi
-    if [ "$CHECK" == "SELINUX=permissive" ]; then
-         sed -i 's/SELINUX=permissive/SELINUX=disabled/g' /etc/selinux/config
-         setenforce 0
-    fi
+fi
+firewall_status=`firewall-cmd --state`
+if [ "$firewall_status" == "running" ]; then
+    green "检测到firewalld开启状态，添加放行80/443端口规则"
+    firewall-cmd --zone=public --add-port=80/tcp --permanent
+    firewall-cmd --zone=public --add-port=443/tcp --permanent
+    firewall-cmd --reload
+fi
+$systemPackage -y install net-tools socat >/dev/null 2>&1
+Port80=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 80`
+Port443=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 443`
+if [ -n "$Port80" ]; then
+    process80=`netstat -tlpn | awk -F '[: ]+' '$5=="80"{print $9}'`
+    red "==========================================================="
+    red "检测到80端口被占用，占用进程为：${process80}，本次安装结束"
+    red "==========================================================="
+    exit 1
+fi
+if [ -n "$Port443" ]; then
+    process443=`netstat -tlpn | awk -F '[: ]+' '$5=="443"{print $9}'`
+    red "============================================================="
+    red "检测到443端口被占用，占用进程为：${process443}，本次安装结束"
+    red "============================================================="
+    exit 1
+fi
 }
 
 check_domain(){
@@ -69,14 +91,14 @@ check_domain(){
 		green "你选择的这个方式，稍微复杂，安装时间比较长"
 		green "请耐心等待……"
 		green "=========================================="
-	sleep 1s
+	        sleep 1s
 		download_wp
 		install_php7
-    	install_mysql
-    	install_nginx
+    	        install_mysql
+    	        install_nginx
 		install_v2ray
 		config_php
-    	install_wp
+    	        install_wp
 		green
 		green "v2ray安装已经完成"
 		green 
