@@ -315,9 +315,7 @@ function start_menu(){
     green " ==============================================="
     green " Info       : onekey script install v2ray+ws+tls        "
     green " OS support : centos7/debian9+/ubuntu16.04+                       "
-    green " Author     : Atrandys                      "
-    green " WebSite    : www.atrandys.com              "
-    green " YouTube    : Randy's 堡垒                   "
+    green " Author     : A                     "
     green " ==============================================="
     echo
     green " 1. Install v2ray+ws+tls1.3"
