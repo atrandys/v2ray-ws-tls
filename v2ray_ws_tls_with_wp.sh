@@ -448,9 +448,7 @@ start_menu(){
     clear
     green "=================================================="
     green " 介绍：适用CentOS7，一键安装wordpress+v2ray_ws_tls"
-    green " 作者：atrandys"
-    green " 网站：www.atrandys.com"
-    green " Youtube：Randy's 堡垒"
+    green " 作者：A"
     green "=================================================="
     green "1. 安装wordpress+v2ray_ws_tls"
     red "2. 卸载wordpress+v2ray_ws_tls"
