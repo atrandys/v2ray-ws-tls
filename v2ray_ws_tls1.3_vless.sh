@@ -271,7 +271,7 @@ cat > /usr/local/etc/v2ray/config.json<<-EOF
          {
           "id": "$v2uuid",
           "level": 0,
-          "email": "$v2uuid@blank.blank
+          "email": "$v2uuid@blank.blank"
          }
        ],
        "decryption": "none",
