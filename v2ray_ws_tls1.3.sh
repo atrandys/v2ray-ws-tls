@@ -252,8 +252,9 @@ function install(){
 #安装v2ray
 function install_v2ray(){
     
-    bash <(curl -L -s https://install.direct/go.sh)  
-    cd /etc/v2ray/
+    #bash <(curl -L -s https://install.direct/go.sh)  
+    bash <(curl -L -s https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh) 
+    cd /usr/local/etc/v2ray/
     rm -f config.json
     wget https://raw.githubusercontent.com/atrandys/v2ray-ws-tls/master/config.json >/dev/null 2>&1
     v2uuid=$(cat /proc/sys/kernel/random/uuid)
@@ -266,7 +267,7 @@ function install_v2ray(){
     systemctl restart v2ray.service
     systemctl restart nginx.service    
     
-cat > /etc/v2ray/myconfig.json<<-EOF
+cat > /usr/local/etc/v2ray/myconfig.json<<-EOF
 {
 ===========配置参数=============
 地址：${your_domain}
@@ -302,8 +303,9 @@ function remove_v2ray(){
     systemctl stop v2ray.service
     systemctl disable v2ray.service
     
-    rm -rf /usr/bin/v2ray /etc/v2ray
-    rm -rf /etc/v2ray
+    rm -rf /usr/local/bin/v2ray /usr/local/bin/v2ctl
+    rm -rf /usr/local/share/v2ray/ /usr/local/etc/v2ray/
+    rm -rf /etc/systemd/system/v2ray*
     rm -rf /etc/nginx
     
     green "nginx、v2ray已删除"
@@ -331,7 +333,7 @@ function start_menu(){
     install
     ;;
     2)
-    bash <(curl -L -s https://install.direct/go.sh)
+    bash <(curl -L -s https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh)
     systemctl restart v2ray
     ;;
     3)
