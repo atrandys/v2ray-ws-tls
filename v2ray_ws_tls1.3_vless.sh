@@ -129,10 +129,9 @@ function install_nginx(){
     tar xf nginx-1.15.8.tar.gz && rm nginx-1.15.8.tar.gz >/dev/null 2>&1
     cd nginx-1.15.8
     ./configure --prefix=/etc/nginx --with-openssl=../openssl-1.1.1a --with-openssl-opt='enable-tls1_3' --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_sub_module --with-stream --with-stream_ssl_module  >/dev/null 2>&1
-    green "开始编译安装nginx，编译等待时间可能较长，请耐心等待，通常需要几到十几分钟"
+    green "开始编译安装nginx，编译等待时间与硬件性能相关，请耐心等待，通常需要几到十几分钟"
     sleep 3s
-    make >/dev/null 2>&1
-    make install >/dev/null 2>&1
+    make & make install
     
 cat > /etc/nginx/conf/nginx.conf <<-EOF
 user  root;
@@ -253,10 +252,44 @@ function install_v2ray(){
     bash <(curl -L -s https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh) 
     cd /usr/local/etc/v2ray/
     rm -f config.json
-    wget https://raw.githubusercontent.com/atrandys/v2ray-ws-tls/master/config.json >/dev/null 2>&1
     v2uuid=$(cat /proc/sys/kernel/random/uuid)
-    sed -i "s/aaaa/$v2uuid/;" config.json
-    sed -i "s/mypath/$newpath/;" config.json
+cat > /usr/local/etc/v2ray/config.json<<-EOF
+{
+  "log" : {
+    "access": "/var/log/v2ray/access.log",
+    "error": "/var/log/v2ray/error.log",
+    "loglevel": "warning"
+  },
+  "inbound": {
+    "port": 11234,
+    "listen":"127.0.0.1",
+    "protocol": "vless",
+    "settings": {
+      "clients": [
+         {
+          "id": "$v2uuid",
+          "level": 0,
+	  "email": "$v2uuid@blank.blank
+         }
+       ],
+       "decryption": "none",
+       "fallback": {},
+       "fallback_h2": {}
+    },
+     "streamSettings": {
+      "network": "ws",
+      "wsSettings": {
+     	 "path": "/$newpath"
+    	}
+     }
+  },
+  "outbound": {
+    "protocol": "freedom",
+    "settings": {}
+  }
+}
+EOF
+    
     cd /etc/nginx/html
     rm -f ./*
     wget https://github.com/atrandys/v2ray-ws-tls/raw/master/web.zip >/dev/null 2>&1
@@ -282,15 +315,13 @@ EOF
 green "=============================="
 green "         安装已经完成"
 green "===========配置参数============"
-green "地址：${your_domain}"
-green "端口：443"
-green "uuid：${v2uuid}"
-green "额外id：64"
-green "加密方式：aes-128-gcm"
-green "传输协议：ws"
-green "别名：myws"
-green "路径：${newpath}"
-green "底层传输：tls"
+green "地址:${your_domain}"
+green "端口:443"
+green "uuid:${v2uuid}"
+green "传输协议:ws"
+green "路径:${newpath}"
+green "底层传输:tls"
+green "allowInsecure: False"
 green 
 }
 
@@ -314,10 +345,9 @@ function start_menu(){
     green " ==============================================="
     green " Info       : onekey script install v2ray+ws+tls        "
     green " OS support : centos7/debian9+/ubuntu16.04+                       "
-    green " Author     : A                     "
     green " ==============================================="
     echo
-    green " 1. Install v2ray+ws+tls1.3"
+    green " 1. Install v2ray+ws+tls1.3 vless"
     green " 2. Update v2ray"
     red " 3. Remove v2ray"
     yellow " 0. Exit"
