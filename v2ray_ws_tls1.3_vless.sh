@@ -274,9 +274,7 @@ cat > /usr/local/etc/v2ray/config.json<<-EOF
           "email": "$v2uuid@blank.blank"
          }
        ],
-       "decryption": "none",
-       "fallback": {},
-       "fallback_h2": {}
+       "decryption": "none"
     },
     "streamSettings": {
       "network": "ws",
