@@ -132,7 +132,8 @@ function install_nginx(){
     ./configure --prefix=/etc/nginx --with-openssl=../openssl-1.1.1a --with-openssl-opt='enable-tls1_3' --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_sub_module --with-stream --with-stream_ssl_module  >/dev/null 2>&1
     green "开始编译安装nginx，编译等待时间与硬件性能相关，请耐心等待，通常需要几到十几分钟"
     sleep 3s
-    make & make install
+    make 
+    make install
     
 cat > /etc/nginx/conf/nginx.conf <<-EOF
 user  root;
