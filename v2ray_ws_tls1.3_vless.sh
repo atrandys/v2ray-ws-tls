@@ -50,6 +50,22 @@ if [ "$release" == "centos" ]; then
     red "==============="
     exit
     fi
+    if [ -f "/etc/selinux/config" ]; then
+        CHECK=$(grep SELINUX= /etc/selinux/config | grep -v "#")
+        if [ "$CHECK" != "SELINUX=disabled" ]; then
+            green "检测到SELinux开启状态，添加开放80/443端口规则"
+	    yum install -y policycoreutils-python >/dev/null 2>&1
+            semanage port -a -t http_port_t -p tcp 80
+            semanage port -a -t http_port_t -p tcp 443
+        fi
+    fi
+    firewall_status=`firewall-cmd --state`
+    if [ "$firewall_status" == "running" ]; then
+        green "检测到firewalld开启状态，添加放行80/443端口规则"
+        firewall-cmd --zone=public --add-port=80/tcp --permanent
+        firewall-cmd --zone=public --add-port=443/tcp --permanent
+        firewall-cmd --reload
+    fi
     rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm >/dev/null 2>&1
     green "开始安装nginx编译依赖"
     yum install -y libtool perl-core zlib-devel gcc pcre* >/dev/null 2>&1
@@ -83,24 +99,8 @@ fi
 }
 
 function check_env(){
-green "安装环境监测"
-sleep 3s
-if [ -f "/etc/selinux/config" ]; then
-    CHECK=$(grep SELINUX= /etc/selinux/config | grep -v "#")
-    if [ "$CHECK" != "SELINUX=disabled" ]; then
-        green "检测到SELinux开启状态，添加开放80/443端口规则"
-	yum install -y policycoreutils-python >/dev/null 2>&1
-        semanage port -a -t http_port_t -p tcp 80
-        semanage port -a -t http_port_t -p tcp 443
-    fi
-fi
-firewall_status=`firewall-cmd --state`
-if [ "$firewall_status" == "running" ]; then
-    green "检测到firewalld开启状态，添加放行80/443端口规则"
-    firewall-cmd --zone=public --add-port=80/tcp --permanent
-    firewall-cmd --zone=public --add-port=443/tcp --permanent
-    firewall-cmd --reload
-fi
+green "安装环境检测"
+sleep 1s
 $systemPackage -y install net-tools socat >/dev/null 2>&1
 Port80=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 80`
 Port443=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 443`
