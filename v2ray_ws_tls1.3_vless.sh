@@ -271,19 +271,19 @@ cat > /usr/local/etc/v2ray/config.json<<-EOF
          {
           "id": "$v2uuid",
           "level": 0,
-	  "email": "$v2uuid@blank.blank
+          "email": "$v2uuid@blank.blank
          }
        ],
        "decryption": "none",
        "fallback": {},
        "fallback_h2": {}
     },
-     "streamSettings": {
+    "streamSettings": {
       "network": "ws",
       "wsSettings": {
-     	 "path": "/$newpath"
-    	}
-     }
+        "path": "/$newpath"
+       }
+    }
   },
   "outbound": {
     "protocol": "freedom",
