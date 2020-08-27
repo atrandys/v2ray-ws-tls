@@ -70,6 +70,7 @@ elif [ "$release" == "ubuntu" ]; then
     if [ -n "$ufw_status" ]; then
         ufw allow 80/tcp
         ufw allow 443/tcp
+	ufw reload
     fi
     apt-get update >/dev/null 2>&1
     green "开始安装nginx编译依赖"
