@@ -194,9 +194,6 @@ server {
         proxy_set_header Connection "upgrade";
         proxy_set_header Host \$http_host;
     }
-    location / {
-       try_files \$uri \$uri/ /index.php?\$args;
-    }
 }
 EOF
 cat > /etc/systemd/system/nginx.service<<-EOF
