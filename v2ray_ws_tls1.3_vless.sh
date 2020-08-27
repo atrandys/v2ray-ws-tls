@@ -294,6 +294,7 @@ EOF
     rm -f ./*
     wget https://github.com/atrandys/v2ray-ws-tls/raw/master/web.zip >/dev/null 2>&1
     unzip web.zip >/dev/null 2>&1
+    systemctl enable v2ray.service
     systemctl restart v2ray.service
     systemctl restart nginx.service    
     
