@@ -117,7 +117,7 @@ function install_nginx(){
     tar xf nginx-1.15.8.tar.gz && rm nginx-1.15.8.tar.gz >/dev/null 2>&1
     cd nginx-1.15.8
     ./configure --prefix=/etc/nginx --with-openssl=../openssl-1.1.1a --with-openssl-opt='enable-tls1_3' --with-http_v2_module --with-http_ssl_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_sub_module --with-stream --with-stream_ssl_module  >/dev/null 2>&1
-    green "开始编译安装nginx，编译等待时间与硬件性能相关，请耐心等待，通常需要几到十几分钟"
+    green "Start to compile and install nginx, the compiling waiting time is related to the hardware performance, please be patient, it usually takes several to ten minutes."
     sleep 3s
     make 
     make install
@@ -164,11 +164,9 @@ server {
     index index.php index.html;
     ssl_certificate /etc/nginx/ssl/fullchain.cer; 
     ssl_certificate_key /etc/nginx/ssl/$your_domain.key;
-    #TLS 版本控制
-    ssl_protocols   TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+    ssl_protocols   TLSv1.2 TLSv1.3;
     ssl_ciphers     'TLS13-AES-256-GCM-SHA384:TLS13-CHACHA20-POLY1305-SHA256:TLS13-AES-128-GCM-SHA256:TLS13-AES-128-CCM-8-SHA256:TLS13-AES-128-CCM-SHA256:EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+ECDSA+AES128:EECDH+aRSA+AES128:RSA+AES128:EECDH+ECDSA+AES256:EECDH+aRSA+AES256:RSA+AES256:EECDH+ECDSA+3DES:EECDH+aRSA+3DES:RSA+3DES:!MD5';
     ssl_prefer_server_ciphers   on;
-    # 开启 1.3 0-RTT
     ssl_early_data  on;
     ssl_stapling on;
     ssl_stapling_verify on;
@@ -207,26 +205,18 @@ install_v2ray
 #安装nginx
 function install(){
     $systemPackage install -y wget curl unzip >/dev/null 2>&1
-    green "======================="
-    blue "请输入绑定到本VPS的域名"
-    green "======================="
+    blue "Eenter your domain:"
     read your_domain
     real_addr=`ping ${your_domain} -c 1 | sed '1{s/[^(]*(//;s/).*//;q}'`
     local_addr=`curl ipv4.icanhazip.com`
     if [ $real_addr == $local_addr ] ; then
-        green "=========================================="
-	green "         域名解析正常，开始安装"
-	green "=========================================="
+	green "DNS records are correct."
         install_nginx
     else
-        red "===================================="
-	red "域名解析地址与本VPS IP地址不一致"
-	red "若你确认解析成功你可强制脚本继续运行"
-	red "===================================="
-	read -p "是否强制运行 ?请输入 [Y/n] :" yn
+	red "DNS records are not correct."
+	read -p "Still process ? Please enter [Y/n] :" yn
 	[ -z "${yn}" ] && yn="y"
 	if [[ $yn == [Yy] ]]; then
-            green "强制继续运行脚本"
 	    sleep 1s
 	    install_nginx
 	else
@@ -300,16 +290,15 @@ uuid：${v2uuid}
 }
 EOF
 
-green "=============================="
-green "         安装已经完成"
-green "===========配置参数============"
-green "地址:${your_domain}"
-green "端口:443"
-green "uuid:${v2uuid}"
-green "传输协议:ws"
-green "路径:${newpath}"
-green "底层传输:tls"
-green "allowInsecure: False"
+green "Installation is complete."
+green
+green "Address      :${your_domain}"
+green "Port         :443"
+green "UUID         :${v2uuid}"
+green "Protocol     :ws"
+green "Path         :${newpath}"
+green "TLSSetting   :tls"
+green "AllowInsecure:False"
 green 
 }
 
@@ -324,7 +313,7 @@ function remove_v2ray(){
     rm -rf /etc/systemd/system/v2ray*
     rm -rf /etc/nginx
     
-    green "nginx、v2ray已删除"
+    green "nginx & v2ray has been deleted."
     
 }
 
@@ -335,12 +324,12 @@ function start_menu(){
     green " OS support : centos7/debian9+/ubuntu16.04+                       "
     green " ==============================================="
     echo
-    green " 1. Install v2ray+ws+tls1.3 vless"
+    green " 1. Install vless + tcp + tls1.3"
     green " 2. Update v2ray"
     red " 3. Remove v2ray"
     yellow " 0. Exit"
     echo
-    read -p "Pls enter a number:" num
+    read -p "Enter a number:" num
     case "$num" in
     1)
     check_os
@@ -359,7 +348,7 @@ function start_menu(){
     ;;
     *)
     clear
-    red "Enter the correct number"
+    red "Enter a correct number"
     sleep 2s
     start_menu
     ;;
