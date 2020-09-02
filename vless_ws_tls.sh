@@ -97,7 +97,7 @@ check_port(){
 install_nginx(){
     green "Install nginx..."
     sleep 1s
-    systemPackage install -y nginx >/dev/null 2>&1
+    $systemPackage install -y nginx >/dev/null 2>&1
     if [ -f "/etc/nginx" ]; then
         red "It seems that nginx installation is not successful. Please use the uninstall function in the script first."
         exit 1
