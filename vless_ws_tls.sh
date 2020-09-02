@@ -305,9 +305,6 @@ remove_v2ray(){
     rm -rf /etc/nginx
     rm -rf /usr/share/nginx/html/*
     rm -rf /root/.acme.sh/
-    green "=============="
-    green "trojan删除完毕"
-    green "=============="
     green "nginx & v2ray has been deleted."
     
 }
