@@ -145,7 +145,7 @@ cat > /etc/nginx/conf.d/default.conf<<-EOF
 server { 
     listen       0.0.0.0:80;
     server_name  $your_domain;
-    root cd /usr/share/nginx/html/;
+    root /usr/share/nginx/html/;
     index index.php index.html;
     #rewrite ^(.*)$  https://\$host\$1 permanent; 
 }
