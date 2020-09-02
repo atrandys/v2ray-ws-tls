@@ -16,6 +16,7 @@ yellow(){
 source /etc/os-release
 RELEASE=$ID
 VERSION=$VERSION_ID
+mkdir /usr/local/etc/v2ray/
 
 check_release(){
     if [ "$RELEASE" == "centos" ]; then
