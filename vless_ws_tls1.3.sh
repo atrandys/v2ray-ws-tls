@@ -124,7 +124,7 @@ function install_nginx(){
     wget https://www.openssl.org/source/old/1.1.1/openssl-1.1.1a.tar.gz >/dev/null 2>&1
     tar xzvf openssl-1.1.1a.tar.gz >/dev/null 2>&1
     mkdir /etc/nginx
-    mkdir /etc/nginx/ssl
+    mkdir /etc/nginx/ssl /etc/nginx/html
     mkdir /etc/nginx/conf.d
     wget https://nginx.org/download/nginx-1.15.8.tar.gz >/dev/null 2>&1
     tar xf nginx-1.15.8.tar.gz && rm nginx-1.15.8.tar.gz >/dev/null 2>&1
