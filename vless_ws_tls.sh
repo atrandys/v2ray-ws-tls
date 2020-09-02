@@ -317,6 +317,7 @@ function start_menu(){
     green " ====================================================="
     green "    Onekey script install v2ray(vless) + tcp + tls"
     green "    centos7/debian9+/ubuntu16.04+ supported     "
+    green "                   by atrandys"
     green " ====================================================="
     echo
     green " 1. Install vless + tcp + tls"
