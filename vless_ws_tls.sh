@@ -35,6 +35,7 @@ check_release(){
                 yum install -y policycoreutils-python >/dev/null 2>&1
                 semanage port -a -t http_port_t -p tcp 80
                 semanage port -a -t http_port_t -p tcp 443
+                semanage port -a -t http_port_t -p tcp 11234
             fi
         fi
         firewall_status=`firewall-cmd --state`
