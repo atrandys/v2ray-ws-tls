@@ -189,16 +189,20 @@ cat > /usr/local/etc/v2ray/config.json<<-EOF
           "email": "$v2uuid@blank.blank"
          }
        ],
-       "fallback": {
-           "addr": "127.0.0.1",
-           "port": 8001,
-           "xver": 0
-       },
-       "fallback_h2": {
-           "addr": "127.0.0.1",
-           "port": 8002,
-           "xver": 0
-       },
+       "fallbacks": [
+         {
+          "alpn": "",
+          "path": "",
+          "dest": 127.0.0.1:8001,
+          "xver": 0
+          },
+          {
+          "alph": "h2",
+          "path": "",
+          "dest": 127.0.0.1:8002,
+          "xver": 0
+          }
+       ],
        "decryption": "none"
     },
     "streamSettings": {
