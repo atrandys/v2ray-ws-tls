@@ -229,8 +229,10 @@ EOF
     if [ -d "/usr/share/nginx/html/" ]; then
         cd /usr/share/nginx/html/
         rm -f ./*
-        wget https://github.com/atrandys/v2ray-ws-tls/raw/master/web.zip >/dev/null 2>&1
-        unzip web.zip >/dev/null 2>&1
+        #wget https://github.com/atrandys/v2ray-ws-tls/raw/master/web.zip >/dev/null 2>&1
+        wget https://github.com/atrandys/trojan/raw/master/fakesite.zip >/dev/null 2>&1
+        unzip fakesite.zip >/dev/null 2>&1
+        #unzip web.zip >/dev/null 2>&1
     fi
     systemctl enable v2ray.service
     chmod -R 777 /usr/local/etc/v2ray/cert
