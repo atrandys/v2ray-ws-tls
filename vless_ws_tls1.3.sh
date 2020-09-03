@@ -324,7 +324,7 @@ function start_menu(){
     green " OS support : centos7/debian9+/ubuntu16.04+                       "
     green " ==============================================="
     echo
-    green " 1. Install vless + tcp + tls1.3"
+    green " 1. Install vless + ws + tls1.3"
     green " 2. Update v2ray"
     red " 3. Remove v2ray"
     yellow " 0. Exit"
