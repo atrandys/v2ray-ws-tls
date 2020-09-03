@@ -186,7 +186,7 @@ EOF
     ~/.acme.sh/acme.sh  --installcert  -d  $your_domain   \
         --key-file   /etc/nginx/ssl/private.key \
         --fullchain-file  /etc/nginx/ssl/fullchain.cer \
-        --reloadcmd  "systemctl restart v2ray.service"
+        --reloadcmd  "systemctl restart nginx.service"
     install_v2ray
 }
 
