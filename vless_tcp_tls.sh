@@ -172,70 +172,68 @@ install_v2ray(){
     v2uuid=$(cat /proc/sys/kernel/random/uuid)
 cat > /usr/local/etc/v2ray/config.json<<-EOF
 {
-  "log" : {
-    "access": "/var/log/v2ray/access.log",
-    "error": "/var/log/v2ray/error.log",
-    "loglevel": "warning"
-  },
-  "inbound": {
-    "port": 443,
-    "listen":"0.0.0.0",
-    "protocol": "vless",
-    "settings": {
-      "clients": [
-         {
-          "id": "$v2uuid",
-          "level": 0,
-          "email": "$v2uuid@blank.blank"
-         }
-       ],
-       "fallbacks": [
-         {
-          "alpn": "",
-          "path": "",
-          "dest": 127.0.0.1:8001,
-          "xver": 0
-          },
-          {
-          "alph": "h2",
-          "path": "",
-          "dest": 127.0.0.1:8002,
-          "xver": 0
-          }
-       ],
-       "decryption": "none"
-    },
-    "streamSettings": {
-        "network": "tcp",
-        "security": "tls",
-        "tlsSettings": {
-            "serverName": "$your_domain",
-            "alpn": [
-                "h2",
-                "http/1.1"
-            ],
-            "certificates": [
-                {
-                    "certificateFile": "/usr/local/etc/v2ray/cert/fullchain.cer",
-                    "keyFile": "/usr/local/etc/v2ray/cert/private.key"
+    "log": {
+        "loglevel": "warning"
+    }, 
+    "inbounds": [
+        {
+            "listen": "0.0.0.0", 
+            "port": 443, 
+            "protocol": "vless", 
+            "settings": {
+                "clients": [
+                    {
+                        "id": "$v2uuid", 
+                        "level": 0, 
+                        "email": "a@b.com"
+                    }
+                ], 
+                "decryption": "none", 
+                "fallbacks": [
+                    {
+                        "dest": 8001
+                    }, 
+                    {
+                        "alpn": "h2", 
+                        "dest": 8002
+                    }
+                ]
+            }, 
+            "streamSettings": {
+                "network": "tcp", 
+                "security": "tls", 
+                "tlsSettings": {
+                    "serverName": "$your_domain", 
+                    "alpn": [
+                        "h2", 
+                        "http/1.1"
+                    ], 
+                    "certificates": [
+                        {
+                            "certificateFile": "/usr/local/etc/v2ray/cert/fullchain.cer", 
+                            "keyFile": "/usr/local/etc/v2ray/cert/private.key"
+                        }
+                    ]
                 }
-            ]
+            }
         }
-    }
-  },
-  "outbound": {
-    "protocol": "freedom",
-    "settings": {}
-  }
+    ], 
+    "outbounds": [
+        {
+            "protocol": "freedom", 
+            "settings": { }
+        }
+    ]
 }
 EOF
-    if [ -f "/usr/share/nginx/html/" ]; then
+    if [ -d "/usr/share/nginx/html/" ]; then
         cd /usr/share/nginx/html/
         rm -f ./*
         wget https://github.com/atrandys/v2ray-ws-tls/raw/master/web.zip >/dev/null 2>&1
         unzip web.zip >/dev/null 2>&1
     fi
     systemctl enable v2ray.service
+    chmod -R 777 /usr/local/etc/v2ray/cert
     ~/.acme.sh/acme.sh  --installcert  -d  $your_domain   \
         --key-file   /usr/local/etc/v2ray/cert/private.key \
         --fullchain-file  /usr/local/etc/v2ray/cert/fullchain.cer \
