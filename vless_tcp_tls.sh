@@ -16,7 +16,6 @@ yellow(){
 source /etc/os-release
 RELEASE=$ID
 VERSION=$VERSION_ID
-mkdir /usr/local/etc/v2ray/
 
 check_release(){
     if [ "$RELEASE" == "centos" ]; then
@@ -164,10 +163,11 @@ EOF
     install_v2ray
 }
 
-install_v2ray(){
-    bash <(curl -L -s https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh) 
-    cd /usr/local/etc/v2ray/
+install_v2ray(){ 
+    mkdir /usr/local/etc/v2ray/
     mkdir /usr/local/etc/v2ray/cert
+    bash <(curl -L -s https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh)
+    cd /usr/local/etc/v2ray/
     rm -f config.json
     v2uuid=$(cat /proc/sys/kernel/random/uuid)
 cat > /usr/local/etc/v2ray/config.json<<-EOF
