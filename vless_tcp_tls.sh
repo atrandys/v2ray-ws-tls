@@ -35,6 +35,8 @@ check_release(){
                 yum install -y policycoreutils-python >/dev/null 2>&1
                 semanage port -a -t http_port_t -p tcp 80
                 semanage port -a -t http_port_t -p tcp 443
+                semanage port -a -t http_port_t -p tcp 37212
+                semanage port -a -t http_port_t -p tcp 37213
             fi
         fi
         firewall_status=`firewall-cmd --state`
@@ -129,14 +131,14 @@ EOF
 
 cat > /etc/nginx/conf.d/default.conf<<-EOF
  server {
-    listen       127.0.0.1:8001;
+    listen       127.0.0.1:37212;
     server_name  $your_domain;
     root /usr/share/nginx/html;
     index index.php index.html index.htm;
 }
 
  server {
-    listen       127.0.0.1:8002 http2;
+    listen       127.0.0.1:37213 http2;
     server_name  $your_domain;
     root /usr/share/nginx/html;
     index index.php index.html index.htm;
@@ -191,11 +193,11 @@ cat > /usr/local/etc/v2ray/config.json<<-EOF
                 "decryption": "none", 
                 "fallbacks": [
                     {
-                        "dest": 8001
+                        "dest": 37212
                     }, 
                     {
                         "alpn": "h2", 
-                        "dest": 8002
+                        "dest": 37213
                     }
                 ]
             }, 
