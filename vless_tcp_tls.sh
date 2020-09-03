@@ -160,6 +160,7 @@ EOF
     if test -s /root/.acme.sh/$your_domain/fullchain.cer; then
         green "Apply https certificate successful."
     else
+        cert_failed="1"
         red "Apply https certificate failed, please apply for certificate manually."
     fi
     install_v2ray
@@ -258,7 +259,11 @@ id：${v2uuid}
 EOF
 
     green "Installation is complete."
-    green
+    if [ "$cert_failed" == "1" ]; then
+        green "======nginx info======"
+        red "Apply https certificate failed, please apply for certificate manually."
+    fi    
+    green "======v2ray config======"
     green "Address      :${your_domain}"
     green "Port         :443"
     green "ID           :${v2uuid}"
