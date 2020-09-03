@@ -106,7 +106,7 @@ install_nginx(){
 cat > /etc/nginx/nginx.conf <<-EOF
 user  root;
 worker_processes  1;
-error_log  /etc/nginx/error.log warn;
+#error_log  /etc/nginx/error.log warn;
 pid    /var/run/nginx.pid;
 events {
     worker_connections  1024;
@@ -117,7 +117,7 @@ http {
     log_format  main  '\$remote_addr - \$remote_user [\$time_local] "\$request" '
                       '\$status \$body_bytes_sent "\$http_referer" '
                       '"\$http_user_agent" "\$http_x_forwarded_for"';
-    access_log  /etc/nginx/access.log  main;
+    #access_log  /etc/nginx/access.log  main;
     sendfile        on;
     #tcp_nopush     on;
     keepalive_timeout  120;
@@ -235,11 +235,10 @@ EOF
         #unzip web.zip >/dev/null 2>&1
     fi
     systemctl enable v2ray.service
-    chmod -R 777 /usr/local/etc/v2ray/cert
     ~/.acme.sh/acme.sh  --installcert  -d  $your_domain   \
         --key-file   /usr/local/etc/v2ray/cert/private.key \
         --fullchain-file  /usr/local/etc/v2ray/cert/fullchain.cer \
-        --reloadcmd  "systemctl restart v2ray.service"
+        --reloadcmd  "chmod -R 777 /usr/local/etc/v2ray/cert && systemctl restart v2ray.service"
 
 cat > /usr/local/etc/v2ray/myconfig.json<<-EOF
 {
