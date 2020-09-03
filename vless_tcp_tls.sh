@@ -80,7 +80,7 @@ check_release(){
 check_port(){
     green "Check ports..."
     sleep 1s
-    $systemPackage -y install net-tools socat >/dev/null 2>&1
+    $systemPackage -y install net-tools >/dev/null 2>&1
     Port80=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 80`
     Port443=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 443`
     if [ -n "$Port80" ]; then
