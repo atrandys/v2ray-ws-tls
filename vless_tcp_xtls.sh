@@ -187,7 +187,8 @@ cat > /usr/local/etc/v2ray/config.json<<-EOF
                     {
                         "id": "$v2uuid", 
                         "level": 0, 
-                        "email": "a@b.com"
+                        "email": "a@b.com",
+                        "flow":"xtls-rprx-origin"
                     }
                 ], 
                 "decryption": "none", 
@@ -228,6 +229,125 @@ cat > /usr/local/etc/v2ray/config.json<<-EOF
     ]
 }
 EOF
+cat > /usr/local/etc/v2ray/client.json<<-EOF
+{
+  "policy": null,
+  "log": {
+    "access": "",
+    "error": "",
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "tag": "proxy",
+      "port": 1080,
+      "listen": "127.0.0.1",
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      },
+      "settings": {
+        "auth": "noauth",
+        "udp": true,
+        "ip": null,
+        "address": null,
+        "clients": null,
+        "decryption": null
+      },
+      "streamSettings": null
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "$your_domain",
+            "port": 443,
+            "users": [
+              {
+                "id": "$v2uuid",
+                "alterId": 0,
+                "email": "t@t.tt",
+                "security": "auto",
+                "encryption": "none",
+                "flow": "xtls-rprx-origin"
+              }
+            ]
+          }
+        ],
+        "servers": null,
+        "response": null
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "tls",
+        "tlsSettings": {
+          "allowInsecure": false,
+          "serverName": null
+        },
+        "tcpSettings": null,
+        "kcpSettings": null,
+        "wsSettings": null,
+        "httpSettings": null,
+        "quicSettings": null
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": -1
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {
+        "vnext": null,
+        "servers": null,
+        "response": null
+      },
+      "streamSettings": null,
+      "mux": null
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole",
+      "settings": {
+        "vnext": null,
+        "servers": null,
+        "response": {
+          "type": "http"
+        }
+      },
+      "streamSettings": null,
+      "mux": null
+    }
+  ],
+  "stats": null,
+  "api": null,
+  "dns": null,
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "port": null,
+        "inboundTag": [
+          "api"
+        ],
+        "outboundTag": "api",
+        "ip": null,
+        "domain": null
+      }
+    ]
+  }
+}
+EOF
     if [ -d "/usr/share/nginx/html/" ]; then
         cd /usr/share/nginx/html/
         rm -f ./*
@@ -236,6 +356,12 @@ EOF
         unzip fakesite.zip >/dev/null 2>&1
         #unzip web.zip >/dev/null 2>&1
     fi
+    systemctl stop v2ray
+    cd /usr/local/bin/
+    rm -f v2*
+    wget https://github.com/rprx/v2ray-vless/releases/download/xtls/v2ray-linux-64.zip
+    unzip v2ray-linux-64.zip
+    chmod +x v2ray v2ctl
     systemctl enable v2ray.service
     ~/.acme.sh/acme.sh  --installcert  -d  $your_domain   \
         --key-file   /usr/local/etc/v2ray/cert/private.key \
@@ -262,16 +388,9 @@ EOF
         green "======nginx info======"
         red "Apply https certificate failed, please apply for certificate manually."
     fi    
-    green "======v2ray config======"
-    green "Address      :${your_domain}"
-    green "Port         :443"
-    green "ID           :${v2uuid}"
-    green "Encryption   :none"
-    green "Protocol     :tcp"
-    green "Type         :none"
-    green "TLSSetting   :tls"
-    green "AllowInsecure:False"
-    green 
+    green "=================v2ray config=================="
+    green "客户端配置文件:/usr/local/etc/v2ray/client.json"
+    cat /usr/local/etc/v2ray/client.json
 }
 
 check_domain(){
@@ -322,12 +441,12 @@ remove_v2ray(){
 function start_menu(){
     clear
     green " ====================================================="
-    green "    Onekey script install v2ray(vless) + tcp + tls"
+    green "    Onekey script install v2ray(vless) + tcp + xtls"
     green "    centos7/debian9+/ubuntu16.04+ supported     "
     green "                   by atrandys"
     green " ====================================================="
     echo
-    green " 1. Install vless + tcp + tls"
+    green " 1. Install vless + tcp + xtls"
     green " 2. Update v2ray"
     red " 3. Remove v2ray"
     yellow " 0. Exit"
