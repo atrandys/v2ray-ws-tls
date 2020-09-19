@@ -359,7 +359,8 @@ EOF
     systemctl stop v2ray
     cd /usr/local/bin/
     rm -f v2*
-    wget https://github.com/rprx/v2ray-vless/releases/download/xtls/v2ray-linux-64.zip
+    #wget https://github.com/rprx/v2ray-vless/releases/download/xtls/v2ray-linux-64.zip
+    wget https://github.com/rprx/v2ray-vless/releases/download/xtls3/v2ray-linux-64.zip
     unzip v2ray-linux-64.zip
     chmod +x v2ray v2ctl
     systemctl enable v2ray.service
