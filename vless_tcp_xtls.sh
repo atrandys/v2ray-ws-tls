@@ -204,7 +204,7 @@ cat > /usr/local/etc/v2ray/config.json<<-EOF
             }, 
             "streamSettings": {
                 "network": "tcp", 
-                "security": "tls", 
+                "security": "xtls", 
                 "tlsSettings": {
                     "serverName": "$your_domain", 
                     "alpn": [
@@ -231,121 +231,47 @@ cat > /usr/local/etc/v2ray/config.json<<-EOF
 EOF
 cat > /usr/local/etc/v2ray/client.json<<-EOF
 {
-  "policy": null,
-  "log": {
-    "access": "",
-    "error": "",
-    "loglevel": "warning"
-  },
-  "inbounds": [
-    {
-      "tag": "proxy",
-      "port": 1080,
-      "listen": "127.0.0.1",
-      "protocol": "socks",
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
-      },
-      "settings": {
-        "auth": "noauth",
-        "udp": true,
-        "ip": null,
-        "address": null,
-        "clients": null,
-        "decryption": null
-      },
-      "streamSettings": null
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "protocol": "vless",
-      "settings": {
-        "vnext": [
-          {
-            "address": "$your_domain",
-            "port": 443,
-            "users": [
-              {
-                "id": "$v2uuid",
-                "alterId": 0,
-                "email": "t@t.tt",
-                "security": "auto",
-                "encryption": "none",
-                "flow": "xtls-rprx-origin"
-              }
-            ]
-          }
-        ],
-        "servers": null,
-        "response": null
-      },
-      "streamSettings": {
-        "network": "tcp",
-        "security": "tls",
-        "tlsSettings": {
-          "allowInsecure": false,
-          "serverName": null
-        },
-        "tcpSettings": null,
-        "kcpSettings": null,
-        "wsSettings": null,
-        "httpSettings": null,
-        "quicSettings": null
-      },
-      "mux": {
-        "enabled": false,
-        "concurrency": -1
-      }
+    "log": {
+        "loglevel": "warning"
     },
-    {
-      "tag": "direct",
-      "protocol": "freedom",
-      "settings": {
-        "vnext": null,
-        "servers": null,
-        "response": null
-      },
-      "streamSettings": null,
-      "mux": null
-    },
-    {
-      "tag": "block",
-      "protocol": "blackhole",
-      "settings": {
-        "vnext": null,
-        "servers": null,
-        "response": {
-          "type": "http"
+    "inbounds": [
+        {
+            "port": 1080,
+            "listen": "127.0.0.1",
+            "protocol": "socks",
+            "settings": {
+                "udp": true
+            }
         }
-      },
-      "streamSettings": null,
-      "mux": null
-    }
-  ],
-  "stats": null,
-  "api": null,
-  "dns": null,
-  "routing": {
-    "domainStrategy": "IPIfNonMatch",
-    "rules": [
-      {
-        "type": "field",
-        "port": null,
-        "inboundTag": [
-          "api"
-        ],
-        "outboundTag": "api",
-        "ip": null,
-        "domain": null
-      }
+    ],
+    "outbounds": [
+        {
+            "protocol": "vless",
+            "settings": {
+                "vnext": [
+                    {
+                        "address": "$your_domain",
+                        "port": 443,
+                        "users": [
+                            {
+                                "id": "$v2uuid",
+                                "flow": "xtls-rprx-origin",
+                                "encryption": "none",
+                                "level": 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "security": "xtls",
+                "xtlsSettings": {
+                    "serverName": "$your_domain"
+                }
+            }
+        }
     ]
-  }
 }
 EOF
     if [ -d "/usr/share/nginx/html/" ]; then
