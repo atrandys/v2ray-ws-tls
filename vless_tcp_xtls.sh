@@ -205,7 +205,7 @@ cat > /usr/local/etc/v2ray/config.json<<-EOF
             "streamSettings": {
                 "network": "tcp", 
                 "security": "xtls", 
-                "tlsSettings": {
+                "xtlsSettings": {
                     "serverName": "$your_domain", 
                     "alpn": [
                         "h2", 
