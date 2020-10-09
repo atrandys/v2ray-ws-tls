@@ -27,7 +27,7 @@ logyellow(){
 }
 
 logcmd(){
-    $1 | tee -ai /var/atrandys.log
+    eval $1 | tee -ai /var/atrandys.log
 }
 
 source /etc/os-release
