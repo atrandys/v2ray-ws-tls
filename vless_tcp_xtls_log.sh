@@ -40,7 +40,7 @@ loggreen "== Kernel: $(uname -r)"
 loggreen "== User  : $(whoami)"
 sleep 2s
 check_release(){
-    loggreen "==== 检查系统版本"
+    loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 检查系统版本"
     if [ "$RELEASE" == "centos" ]; then
         systemPackage="yum"
         if  [ "$VERSION" == "6" ] ;then
@@ -108,7 +108,7 @@ check_release(){
 }
 
 check_port(){
-    loggreen "==== 检查端口"
+    loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 检查端口"
     logcmd "$systemPackage -y install net-tools"
     Port80=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 80`
     Port443=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 443`
@@ -124,7 +124,7 @@ check_port(){
     fi
 }
 install_nginx(){
-    loggreen "==== 安装nginx"
+    loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 安装nginx"
     logcmd "$systemPackage install -y nginx"
     if [ -f "/etc/nginx" ]; then
         logred "$(date +"%Y-%m-%d %H:%M:%S") - 看起来nginx没有安装成功，请先使用脚本中的删除v2ray功能，然后再重新安装.\n== Install failed."
@@ -177,6 +177,7 @@ server {
     #rewrite ^(.*)$  https://\$host\$1 permanent; 
 }
 EOF
+    loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 检测nginx配置文件"
     logcmd "nginx -t"
     systemctl enable nginx.service
     systemctl restart nginx.service
@@ -193,6 +194,7 @@ EOF
 }
 
 install_v2ray(){ 
+    loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 安装v2ray"
     mkdir /usr/local/etc/v2ray/
     mkdir /usr/local/etc/v2ray/cert
     logcmd "bash <(curl -L -s https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh)"
