@@ -38,7 +38,7 @@ loggreen "== Time  : $(date +"%Y-%m-%d %H:%M:%S")"
 loggreen "== OS    : $RELEASE $VERSION"
 loggreen "== Kernel: $(uname -r)"
 loggreen "== User  : $(whoami)"
-
+sleep 2s
 check_release(){
     loggreen "==== 检查系统版本"
     if [ "$RELEASE" == "centos" ]; then
