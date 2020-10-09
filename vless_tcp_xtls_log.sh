@@ -43,11 +43,11 @@ check_release(){
     loggreen "==== 检查系统版本"
     if [ "$RELEASE" == "centos" ]; then
         systemPackage="yum"
-        if  [ -n "$(grep ' 6\.' /etc/logredhat-release)" ] ;then
+        if  [ "$VERSION" == "6" ] ;then
             logred "$(date +"%Y-%m-%d %H:%M:%S") - 暂不支持CentOS 6.\n== Install failed."
             exit
         fi
-        if  [ -n "$(grep ' 5\.' /etc/logredhat-release)" ] ;then
+        if  [ "$VERSION" == "5" ] ;then
             logred "$(date +"%Y-%m-%d %H:%M:%S") - 暂不支持CentOS 5.\n== Install failed."
             exit
         fi
@@ -77,11 +77,11 @@ check_release(){
         logcmd "yum install -y epel-release"
     elif [ "$RELEASE" == "ubuntu" ]; then
         systemPackage="apt-get"
-        if  [ -n "$(grep ' 14\.' /etc/os-release)" ] ;then
+        if  [ "$VERSION" == "14" ] ;then
             logred "$(date +"%Y-%m-%d %H:%M:%S") - 暂不支持Ubuntu 14.\n== Install failed."
             exit
         fi
-        if  [ -n "$(grep ' 12\.' /etc/os-release)" ] ;then
+        if  [ "$VERSION" == "12" ] ;then
             logred "$(date +"%Y-%m-%d %H:%M:%S") - 暂不支持Ubuntu 12.\n== Install failed."
             exit
         fi
