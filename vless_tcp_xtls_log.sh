@@ -325,15 +325,15 @@ EOF
 
 cat > /usr/local/etc/v2ray/myconfig.json<<-EOF
 {
-===========配置参数=============
 地址：${your_domain}
 端口：443
 id：${v2uuid}
 加密：none
+流控：xtls-rprx-origin
 别名：自定义
 传输协议：tcp
 伪装类型：none
-底层传输：tls
+底层传输：xtls
 跳过证书验证：false
 }
 EOF
@@ -344,8 +344,7 @@ EOF
         logred "申请证书失败，请尝试手动申请证书."
     fi    
     loggreen "=================v2ray配置文件=================="
-    loggreen "客户端配置文件:/usr/local/etc/v2ray/client.json"
-    cat /usr/local/etc/v2ray/client.json
+    cat /usr/local/etc/v2ray/myconfig.json
     loggreen "本次安装检测信息如下："
     logcmd "ps -aux | grep -e nginx -e v2ray"
     
