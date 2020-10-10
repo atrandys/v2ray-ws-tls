@@ -314,7 +314,7 @@ EOF
     fi
 cat > /etc/nginx/conf.d/default.conf<<-EOF
 server {
-    listen       127.0.0.1:80;
+    listen       127.0.0.1:37212 http2;
     server_name  $your_domain;
     root /usr/share/nginx/html;
     index index.php index.html index.htm;
@@ -332,18 +332,6 @@ server {
     listen       0.0.0.0:80;
     server_name  $your_domain;
     return 301 https://$your_domain\$request_uri;
-}
- server {
-    listen       127.0.0.1:37212;
-    server_name  $your_domain;
-    root /usr/share/nginx/html;
-    index index.php index.html index.htm;
-}
- server {
-    listen       127.0.0.1:37213 http2;
-    server_name  $your_domain;
-    root /usr/share/nginx/html;
-    index index.php index.html index.htm;
 }
 EOF
     install_v2ray
@@ -380,11 +368,8 @@ cat > /usr/local/etc/v2ray/config.json<<-EOF
                 "decryption": "none", 
                 "fallbacks": [
                     {
-                        "dest": 37212
-                    }, 
-                    {
                         "alpn": "h2", 
-                        "dest": 37213
+                        "dest": 37212
                     }
                 ]
             }, 
