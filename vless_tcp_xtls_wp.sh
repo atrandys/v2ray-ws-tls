@@ -41,6 +41,7 @@ loggreen "== User  : $(whoami)"
 sleep 2s
 
 install_wordpress(){
+    loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 安装wordpress"
     logcmd "yum install -y iptables-services"
     systemctl start iptables
     systemctl enable iptables
@@ -62,6 +63,8 @@ install_wordpress(){
     loggreen "====================================================================="
     loggreen "安全起见，iptables仅开启ssh,http,https端口，如需开放其他端口请自行放行"
     loggreen "====================================================================="
+    echo
+    echo
     sleep 1
     yum -y install  wget
     mkdir /usr/share/wordpresstemp
@@ -251,6 +254,8 @@ check_release(){
 
 check_port(){
     loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 检查端口"
+    echo
+    echo
     logcmd "$systemPackage -y install net-tools"
     Port80=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 80`
     Port443=`netstat -tlpn | awk -F '[: ]+' '$1=="tcp"{print $5}' | grep -w 443`
@@ -267,6 +272,8 @@ check_port(){
 }
 install_nginx(){
     loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 安装nginx"
+    echo
+    echo
     logcmd "$systemPackage install -y nginx"
     if [ -f "/etc/nginx" ]; then
         logred "$(date +"%Y-%m-%d %H:%M:%S") - 看起来nginx没有安装成功，请先使用脚本中的删除v2ray功能，然后再重新安装.\n== Install failed."
@@ -347,6 +354,8 @@ EOF
 
 install_v2ray(){ 
     loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 安装v2ray"
+    echo
+    echo
     mkdir /usr/local/etc/v2ray/
     mkdir /usr/local/etc/v2ray/cert
     logcmd "bash <(curl -L -s https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh)"
