@@ -198,11 +198,7 @@ EOT
 }
 
 check_release(){
-    loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 检查RPM占用"
-    if [ -f "/var/lib/rpm/.rpm.lock" ]; then
-        loggreen "$(date +"%Y-%m-%d %H:%M:%S") - 检测到RPM占用,解除占用."
-        logcmd "rm -f /var/lib/rpm/.rpm.lock"
-    fi
+    logcmd "rm -f /var/lib/rpm/.rpm.lock"
     loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 检查系统版本"
     if [ "$RELEASE" == "centos" ]; then
         systemPackage="yum"
