@@ -231,8 +231,12 @@ check_release(){
             logcmd "systemctl disable firewalld"
             logcmd "systemctl stop firewalld"
         fi
-        rm -f /var/lib/rpm/.rpm.lock
-        logcmd "rpm -ivh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm --force --nodeps"
+        #rm -f /var/lib/rpm/.rpm.lock
+        while [ ! -f "nginx-release-centos-7-0.el7.ngx.noarch.rpm" ]
+        do
+            logcmd "wget http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm"
+        done
+        logcmd "rpm -ivh nginx-release-centos-7-0.el7.ngx.noarch.rpm --force --nodeps"
         #loggreen "Prepare to install nginx."
         #yum install -y libtool perl-core zlib-devel gcc pcre* >/dev/null 2>&1
         logcmd "yum install -y epel-release"
