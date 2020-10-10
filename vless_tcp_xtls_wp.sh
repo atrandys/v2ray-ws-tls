@@ -198,7 +198,6 @@ EOT
 }
 
 check_release(){
-    logcmd "rm -f /var/lib/rpm/.rpm.lock"
     loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 检查系统版本"
     if [ "$RELEASE" == "centos" ]; then
         systemPackage="yum"
@@ -232,7 +231,8 @@ check_release(){
             logcmd "systemctl disable firewalld"
             logcmd "systemctl stop firewalld"
         fi
-        logcmd "rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm --force --nodeps"
+        rm -f /var/lib/rpm/.rpm.lock
+        logcmd "rpm -ivh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm --force --nodeps"
         #loggreen "Prepare to install nginx."
         #yum install -y libtool perl-core zlib-devel gcc pcre* >/dev/null 2>&1
         logcmd "yum install -y epel-release"
