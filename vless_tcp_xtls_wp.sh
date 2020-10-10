@@ -33,7 +33,7 @@ logcmd(){
 source /etc/os-release
 RELEASE=$ID
 VERSION=$VERSION_ID
-loggreen "== Script: atrandys/v2ray-ws-tls/vless_tcp_xtls.sh"
+loggreen "== Script: atrandys/v2ray-ws-tls/vless_tcp_xtls_wp.sh"
 loggreen "== Time  : $(date +"%Y-%m-%d %H:%M:%S")"
 loggreen "== OS    : $RELEASE $VERSION"
 loggreen "== Kernel: $(uname -r)"
