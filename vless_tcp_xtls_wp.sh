@@ -235,6 +235,9 @@ check_release(){
         while [ ! -f "nginx-release-centos-7-0.el7.ngx.noarch.rpm" ]
         do
             logcmd "wget http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm"
+            if [ ! -f "nginx-release-centos-7-0.el7.ngx.noarch.rpm" ]; then
+                logred "$(date +"%Y-%m-%d %H:%M:%S") - 下载nginx rpm包失败，继续重试..."
+            fi
         done
         logcmd "rpm -ivh nginx-release-centos-7-0.el7.ngx.noarch.rpm --force --nodeps"
         #loggreen "Prepare to install nginx."
