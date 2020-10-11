@@ -170,7 +170,7 @@ EOT
     sleep 1s
     cd /usr/share/nginx/html
     mv /usr/share/wordpresstemp/latest-zh_CN.zip ./
-    logcmd "unzip latest-zh_CN.zip"
+    unzip latest-zh_CN.zip
     mv wordpress/* ./
     #cp wp-config-sample.php wp-config.php
     logcmd "wget https://raw.githubusercontent.com/atrandys/trojan/master/wp-config.php"
