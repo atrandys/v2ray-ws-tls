@@ -63,7 +63,6 @@ check_release(){
                 semanage port -a -t http_port_t -p tcp 443
                 semanage port -a -t http_port_t -p tcp 37212
                 semanage port -a -t http_port_t -p tcp 37213
-                chcon -R -t httpd_sys_content_t /usr/share/nginx/html
             fi
         fi
         firewall_status=`firewall-cmd --state`
@@ -189,6 +188,9 @@ server {
 EOF
     loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 检测nginx配置文件"
     logcmd "nginx -t"
+    if [ "$CHECK" != "SELINUX=disabled" ]; then
+        chcon -R -t httpd_sys_content_t /usr/share/nginx/html
+    fi
     systemctl enable nginx.service
     systemctl restart nginx.service
     loggreen "$(date +"%Y-%m-%d %H:%M:%S") - 使用acme.sh申请https证书."
