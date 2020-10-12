@@ -301,6 +301,7 @@ remove_v2ray(){
     fi
     rm -rf /usr/local/share/v2ray/ /usr/local/etc/v2ray/
     rm -rf /etc/systemd/system/v2ray*
+    rm -f /usr/local/bin/v2ray /usr/local/bin/v2ctl 
     rm -rf /etc/nginx
     rm -rf /usr/share/nginx/html/*
     rm -rf /root/.acme.sh/
