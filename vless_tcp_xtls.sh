@@ -57,7 +57,7 @@ check_release(){
             if [ "$CHECK" == "SELINUX=enforcing" ]; then
                 loggreen "$(date +"%Y-%m-%d %H:%M:%S") - SELinux状态非disabled,关闭SELinux."
                 setenforce 0
-                sed -i 's/SELINUX=enforcing/SELINUX=disabled/g'/etc/sysconfig/selinux
+                sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
                 #loggreen "SELinux is not disabled, add port 80/443 to SELinux rules."
                 #loggreen "==== Install semanage"
                 #logcmd "yum install -y policycoreutils-python"
@@ -68,7 +68,7 @@ check_release(){
             elif [ "$CHECK" == "SELINUX=permissive" ]; then
                 loggreen "$(date +"%Y-%m-%d %H:%M:%S") - SELinux状态非disabled,关闭SELinux."
                 setenforce 0
-                sed -i 's/SELINUX=permissive/SELINUX=disabled/g'/etc/sysconfig/selinux
+                sed -i 's/SELINUX=permissive/SELINUX=disabled/g' /etc/sysconfig/selinux
             fi
         fi
         firewall_status=`firewall-cmd --state`
