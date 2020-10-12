@@ -63,6 +63,7 @@ check_release(){
                 semanage port -a -t http_port_t -p tcp 443
                 semanage port -a -t http_port_t -p tcp 37212
                 semanage port -a -t http_port_t -p tcp 37213
+                chcon -R -t httpd_sys_content_t /usr/share/nginx/html
             fi
         fi
         firewall_status=`firewall-cmd --state`
