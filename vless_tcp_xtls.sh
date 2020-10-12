@@ -396,6 +396,7 @@ remove_v2ray(){
         find / | grep nginx | sudo xargs rm -rf
     fi
     rm -rf /usr/local/share/v2ray/ /usr/local/etc/v2ray/
+    rm -f /usr/local/bin/v2ray /usr/local/bin/v2ctl 
     rm -rf /etc/systemd/system/v2ray*
     rm -rf /etc/nginx
     rm -rf /usr/share/nginx/html/*
