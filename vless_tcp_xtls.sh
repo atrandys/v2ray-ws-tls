@@ -54,15 +54,20 @@ check_release(){
         fi
         if [ -f "/etc/selinux/config" ]; then
             CHECK=$(grep SELINUX= /etc/selinux/config | grep -v "#")
-            if [ "$CHECK" != "SELINUX=disabled" ]; then
-                loggreen "$(date +"%Y-%m-%d %H:%M:%S") - SELinux状态非disabled,添加80/443到SELinux rules."
+            if [ "$CHECK" == "SELINUX=enforcing" ]; then
+                loggreen "$(date +"%Y-%m-%d %H:%M:%S") - SELinux状态非disabled,关闭SELinux."
+                setenforce 0
+                sed -i 's/SELINUX=enforcing/SELINUX=disabled/g'/etc/sysconfig/selinux
                 #loggreen "SELinux is not disabled, add port 80/443 to SELinux rules."
-                loggreen "==== Install semanage"
-                logcmd "yum install -y policycoreutils-python"
-                semanage port -a -t http_port_t -p tcp 80
-                semanage port -a -t http_port_t -p tcp 443
-                semanage port -a -t http_port_t -p tcp 37212
-                semanage port -a -t http_port_t -p tcp 37213
+                #loggreen "==== Install semanage"
+                #logcmd "yum install -y policycoreutils-python"
+                #semanage port -a -t http_port_t -p tcp 80
+                #semanage port -a -t http_port_t -p tcp 443
+                #semanage port -a -t http_port_t -p tcp 37212
+                #semanage port -a -t http_port_t -p tcp 37213
+            elif [ "$CHECK" == "SELINUX=permissive" ]; then
+                setenforce 0
+                sed -i 's/SELINUX=permissive/SELINUX=disabled/g'/etc/sysconfig/selinux
             fi
         fi
         firewall_status=`firewall-cmd --state`
@@ -188,12 +193,12 @@ server {
 EOF
     loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 检测nginx配置文件"
     logcmd "nginx -t"
-    CHECK=$(grep SELINUX= /etc/selinux/config | grep -v "#")
-    if [ "$CHECK" != "SELINUX=disabled" ]; then
-        loggreen "设置Selinux允许nginx"
-        cat /var/log/audit/audit.log | grep nginx | grep denied | audit2allow -M mynginx  
-        semodule -i mynginx.pp 
-    fi
+    #CHECK=$(grep SELINUX= /etc/selinux/config | grep -v "#")
+    #if [ "$CHECK" != "SELINUX=disabled" ]; then
+    #    loggreen "设置Selinux允许nginx"
+    #    cat /var/log/audit/audit.log | grep nginx | grep denied | audit2allow -M mynginx  
+    #    semodule -i mynginx.pp 
+    #fi
     systemctl enable nginx.service
     systemctl restart nginx.service
     loggreen "$(date +"%Y-%m-%d %H:%M:%S") - 使用acme.sh申请https证书."
