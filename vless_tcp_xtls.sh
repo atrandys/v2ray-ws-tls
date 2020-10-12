@@ -188,7 +188,11 @@ server {
 EOF
     loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 检测nginx配置文件"
     logcmd "nginx -t"
-    chcon -R -t httpd_sys_content_t /usr/share/nginx/html
+    if [ "$CHECK" != "SELINUX=disabled" ]; then
+        loggreen "设置Selinux允许nginx"
+        cat /var/log/audit/audit.log | grep nginx | grep denied | audit2allow -M mynginx  
+        semodule -i mynginx.pp 
+    fi
     systemctl enable nginx.service
     systemctl restart nginx.service
     loggreen "$(date +"%Y-%m-%d %H:%M:%S") - 使用acme.sh申请https证书."
