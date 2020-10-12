@@ -66,6 +66,7 @@ check_release(){
                 #semanage port -a -t http_port_t -p tcp 37212
                 #semanage port -a -t http_port_t -p tcp 37213
             elif [ "$CHECK" == "SELINUX=permissive" ]; then
+                loggreen "$(date +"%Y-%m-%d %H:%M:%S") - SELinux状态非disabled,关闭SELinux."
                 setenforce 0
                 sed -i 's/SELINUX=permissive/SELINUX=disabled/g'/etc/sysconfig/selinux
             fi
