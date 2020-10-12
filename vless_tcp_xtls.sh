@@ -188,6 +188,7 @@ server {
 EOF
     loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 检测nginx配置文件"
     logcmd "nginx -t"
+    CHECK=$(grep SELINUX= /etc/selinux/config | grep -v "#")
     if [ "$CHECK" != "SELINUX=disabled" ]; then
         loggreen "设置Selinux允许nginx"
         cat /var/log/audit/audit.log | grep nginx | grep denied | audit2allow -M mynginx  
