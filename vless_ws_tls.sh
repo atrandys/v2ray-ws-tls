@@ -31,7 +31,7 @@ check_release(){
         if [ -f "/etc/selinux/config" ]; then
             CHECK=$(grep SELINUX= /etc/selinux/config | grep -v "#")
             if [ "$CHECK" == "SELINUX=enforcing" ]; then
-                loggreen "$(date +"%Y-%m-%d %H:%M:%S") - SELinux状态非disabled,关闭SELinux."
+                green "$(date +"%Y-%m-%d %H:%M:%S") - SELinux状态非disabled,关闭SELinux."
                 setenforce 0
                 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
                 #loggreen "SELinux is not disabled, add port 80/443 to SELinux rules."
@@ -42,7 +42,7 @@ check_release(){
                 #semanage port -a -t http_port_t -p tcp 37212
                 #semanage port -a -t http_port_t -p tcp 37213
             elif [ "$CHECK" == "SELINUX=permissive" ]; then
-                loggreen "$(date +"%Y-%m-%d %H:%M:%S") - SELinux状态非disabled,关闭SELinux."
+                green "$(date +"%Y-%m-%d %H:%M:%S") - SELinux状态非disabled,关闭SELinux."
                 setenforce 0
                 sed -i 's/SELINUX=permissive/SELINUX=disabled/g' /etc/sysconfig/selinux
             fi
@@ -56,12 +56,12 @@ check_release(){
         fi
         while [ ! -f "nginx-release-centos-7-0.el7.ngx.noarch.rpm" ]
         do
-            logcmd "wget http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm"
+            wget http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
             if [ ! -f "nginx-release-centos-7-0.el7.ngx.noarch.rpm" ]; then
-                logred "$(date +"%Y-%m-%d %H:%M:%S") - 下载nginx rpm包失败，继续重试..."
+                red "$(date +"%Y-%m-%d %H:%M:%S") - 下载nginx rpm包失败，继续重试..."
             fi
         done
-        logcmd "rpm -ivh nginx-release-centos-7-0.el7.ngx.noarch.rpm --force --nodeps"
+        rpm -ivh nginx-release-centos-7-0.el7.ngx.noarch.rpm --force --nodeps
         #green "Prepare to install nginx."
         #yum install -y libtool perl-core zlib-devel gcc pcre* >/dev/null 2>&1
         yum install -y epel-release
