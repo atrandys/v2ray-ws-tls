@@ -19,6 +19,7 @@ VERSION=$VERSION_ID
 
 check_release(){
     if [ "$RELEASE" == "centos" ]; then
+        yum install -y wget
         systemPackage="yum"
         if  [ -n "$(grep ' 6\.' /etc/redhat-release)" ] ;then
             red "CentOS 6 is not supported."
@@ -95,6 +96,7 @@ check_release(){
 }
 
 check_port(){
+    $systemPackage install -y unzip >/dev/null 2>&1
     green "Check ports..."
     sleep 1s
     $systemPackage -y install net-tools >/dev/null 2>&1
@@ -280,7 +282,6 @@ EOF
 }
 
 check_domain(){
-    $systemPackage install -y wget curl unzip >/dev/null 2>&1
     blue "Eenter your domain:"
     read your_domain
     real_addr=`ping ${your_domain} -c 1 | sed '1{s/[^(]*(//;s/).*//;q}'`
