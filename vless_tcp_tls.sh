@@ -20,6 +20,7 @@ VERSION=$VERSION_ID
 check_release(){
     if [ "$RELEASE" == "centos" ]; then
         systemPackage="yum"
+        yum install -y wget
         if  [ -n "$(grep ' 6\.' /etc/redhat-release)" ] ;then
             red "CentOS 6 is not supported."
             exit
