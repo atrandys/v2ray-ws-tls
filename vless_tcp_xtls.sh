@@ -41,9 +41,9 @@ loggreen "== User  : $(whoami)"
 sleep 2s
 check_release(){
     loggreen "$(date +"%Y-%m-%d %H:%M:%S") ==== 检查系统版本"
-    logcmd "yum install -y wget"
     if [ "$RELEASE" == "centos" ]; then
         systemPackage="yum"
+        logcmd "yum install -y wget"
         if  [ "$VERSION" == "6" ] ;then
             logred "$(date +"%Y-%m-%d %H:%M:%S") - 暂不支持CentOS 6.\n== Install failed."
             exit
