@@ -305,7 +305,7 @@ cat > /usr/local/etc/v2ray/client.json<<-EOF
                         "users": [
                             {
                                 "id": "$v2uuid",
-                                "flow": "xtls-rprx-origin",
+                                "flow": "xtls-rprx-direct",
                                 "encryption": "none",
                                 "level": 0
                             }
@@ -350,7 +350,7 @@ cat > /usr/local/etc/v2ray/myconfig.json<<-EOF
 端口：443
 id：${v2uuid}
 加密：none
-流控：xtls-rprx-origin
+流控：xtls-rprx-direct
 别名：自定义
 传输协议：tcp
 伪装类型：none
