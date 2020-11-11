@@ -238,7 +238,7 @@ cat > /usr/local/etc/v2ray/config.json<<-EOF
                         "id": "$v2uuid", 
                         "level": 0, 
                         "email": "a@b.com",
-                        "flow":"xtls-rprx-origin"
+                        "flow":"xtls-rprx-direct"
                     }
                 ], 
                 "decryption": "none", 
